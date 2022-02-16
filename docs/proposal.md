@@ -17,5 +17,46 @@ app will show the distribution of factors contributing to gold medals in past Ol
 by filtering and re-ordering on different variables, such as country, geographical location, and sport.
 
 
+## Description of the Data
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+## Research Question and Usage Scenarios
+
+
+
+
+
+
+
+
+
+
+
+
+
+## Description of the App and Sketch
+
+
+
+
+
+
+
+
+
+
+
 
 
