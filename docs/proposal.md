@@ -49,6 +49,16 @@ the important features that will displayed on the dashboard. `ID`,
 `NAME`, `SEX`, `AGE`, `HEIGHT`, `WEIGHT`, `TEAM`, `COUNTRY`, `GAMES`,
 `YEAR`, `SPORT`, `SEASON`, `CITY`, `EVENT` and `MEDAL`.
 
-## Research Question and Usage Scenarios
+## Research Question and Usage Scenario
+### Research Questions
 
+Some of the research questions we are hoping to answer for our dashboard users include:
+
+1. Where do Olympic Games stand in terms of gender equality?
+2. How participations of countries have improved over the years
+3. Does hosting Olympics improves performance of athletes of that country ?
+4. Does physical parameters like height, weight and Age per sport affect athlete's performance ?
+
+### Usage Scenario
+Ana is a 26-year-old anchor who works for a reputed news channel. She is passionate about sports and have done lot of interviews with athletes on the channel. With the onset of olympics 2022, she has been assigned to lead an interview with ex-athletes on past olympic trends and to generate excitement among viewers for Olympics 2022. She has followed Olympics for the last 4-5 years but don't know the past trends of 15-20 years and the growth of Olympics with respect to gender representation, country hosting etc. So, she decided to use this dashboard app to note down the trends to prepare her for the upcoming interview and has also thought of using same dashboard to show to viewers to show insights of Olympics observed over the years.
 ## Description of the App and Sketch
