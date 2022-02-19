@@ -50,5 +50,3 @@ the important features that will displayed on the dashboard. `ID`,
 `YEAR`, `SPORT`, `SEASON`, `CITY`, `EVENT` and `MEDAL`.
 
 ## Research Question and Usage Scenarios
-
-## Description of the App and Sketch
