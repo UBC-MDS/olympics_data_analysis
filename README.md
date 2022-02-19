@@ -1,5 +1,9 @@
-# Olympic Games Dashboard
+
+# Olympic Games Analysis Dashboard
 An interactive dashboard demonstrating statistics regarding the Summer and Winter Olympic Games from 1990 to 2016.
+
+## Overview 
+This app aims to make Olympic data accessible and digestible for community members, and potentially inform individual watching behaviours at future Olympic games. Our app will show the distribution of factors contributing to gold medals in past Olympic games and will allow users to explore various aspects of this data with ease by filtering and re-ordering on different variables, such as country, geographical location, and sport.
 
 ## Description
 
@@ -24,11 +28,14 @@ Within the 'Home Field Advantage' tab, we will allow users to interactively sele
 
 Finally, the 'Do Physical Attributes Affect Performance? tab will show how physical attributes affect performance in different sports. Moreover, we will allow users to interactively select a year and a sport via 2 drop-down menu bars, and these selections will interact wih each panel presented in this tab. We will use a pie chart to demonstrate the proportion of medals received by different height categories. We will also use a histogram and a scatterplot to show the effects of age and weight on the number of medals received, respectively.
 
+## Contributing
+
+This app is authored by  Kiran Phaterpekar, Karanpreet Kaur, Sanchit Singh, Lakshmi Santosha Valli Akella. You can see the list of all contributors in the contributors tab.
+
+We welcome and recognize all contributions. If you wish to participate, please review our [Contributing guidelines](CONTRIBUTING.md)
+
+## License
+
+The app is licensed under the terms of the MIT license.
 
 
-
-## Contributions
-
-## Code of Conduct
-
-## Licence
