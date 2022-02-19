@@ -1,14 +1,14 @@
-
 # Olympic Games Analysis Dashboard
+
 An interactive dashboard demonstrating statistics regarding the Summer and Winter Olympic Games from 1896 to 2016.
 
-## Overview 
-This app aims to make Olympic data accessible and digestible for community members, and potentially inform individual watching behaviours at future Olympic games. Our app will show the distribution of factors contributing to gold medals in past Olympic games and will allow users to explore various aspects of this data with ease by filtering and re-ordering on different variables, such as country, geographical location, and sport.
+## Overview
+
+This app aims to make Olympic data accessible and digestible for community members, and potentially inform individuals watching, the expected pattern in the future Olympic games. Our app will show the distribution of factors contributing to gold medals in past Olympic games and will allow users to explore various aspects of this data with ease by filtering and re-ordering on different variables, such as country, geographical location, and sport.
 
 ## Description
 
-This app will provide a dashboard that summarizes a few of the key statistics that we have extracted from this data. Specifically, our dashboard aims to provide
-accessible visuals that demonstrate the differences in biological sex, geographic location, and physical characteristics of athletes and how these factors impact performance within the Olympic Games. Our dashboard will be segregated into 3 tabs: 'Gender Equality', 'Home Field Advantage', and 'Do Physical Attributes Affect Performance?'.
+This app will provide a dashboard that summarizes a few of the key statistics that we have extracted from this data. Specifically, our dashboard aims to provide accessible visuals that demonstrate the differences in biological sex, geographic location, and physical characteristics of athletes and how these factors impact performance within the Olympic Games. Our dashboard will be segregated into 3 tabs: 'Gender Equality', 'Home Field Advantage', and 'Do Physical Attributes Affect Performance?'.
 
 **Gender Equality**
 
@@ -30,12 +30,10 @@ Finally, the 'Do Physical Attributes Affect Performance? tab will show how physi
 
 ## Contributing
 
-This app is authored by  Kiran Phaterpekar, Karanpreet Kaur, Sanchit Singh, Lakshmi Santosha Valli Akella. You can see the list of all contributors in the contributors tab.
+This app is authored by Kiran Phaterpekar, Karanpreet Kaur, Sanchit Singh, Lakshmi Santosha Valli Akella. You can see the list of all contributors in the contributors tab.
 
 We welcome and recognize all contributions. If you wish to participate, please review our [Contributing guidelines](CONTRIBUTING.md)
 
 ## License
 
 The app is licensed under the terms of the MIT license.
-
-
