@@ -10,9 +10,7 @@ Within the 'Gender Equality' tab, we will provide a line chart in the top right 
 
 Within the 'Home Field Advantage' tab, we will allow users to interactively select a year via a drop-down menu bar to view which country hosted the Olympic Games for that specified year, which will be highlighted on a world map. Additionally, this drop-down menu will interact with the other panels to highlight the selected country in those panels. The panel on the right will compare the number of medals received by the selected 'home' country in other Olympic Games and compare this with the number of medals received when hosting the Olympic games. The bottom-left panel will highlight how the number of medals in the home country compares with the number of medals received by other teams for the selected year.
 
-Finally, the 'Do Physical Attributes Affect Performance?
-
-
+Finally, the 'Do Physical Attributes Affect Performance? tab will show how physical attributes affect performance in different sports. Moreover, we will allow users to interactively select a year and a sport via 2 drop-down menu bars, and these selections will interact wih each panel presented in this tab. We will use a pie chart to demonstrate the proportion of medals received by different height categories. We will also use a histogram and a scatterplot to show the effects of age and weight on the number of medals received, respectively.
 
 
 
