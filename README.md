@@ -1,5 +1,5 @@
 # Olympic Games Dashboard
-An interactive dashboard demonstrating statistics regarding the Summer and Winter Olympic Games over the years.
+An interactive dashboard demonstrating statistics regarding the Summer and Winter Olympic Games from 1990 to 2016.
 
 ## Description
 
