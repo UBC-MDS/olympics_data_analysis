@@ -1,6 +1,6 @@
 
 # Olympic Games Analysis Dashboard
-An interactive dashboard demonstrating statistics regarding the Summer and Winter Olympic Games from 1990 to 2016.
+An interactive dashboard demonstrating statistics regarding the Summer and Winter Olympic Games from 1896 to 2016.
 
 ## Overview 
 This app aims to make Olympic data accessible and digestible for community members, and potentially inform individual watching behaviours at future Olympic games. Our app will show the distribution of factors contributing to gold medals in past Olympic games and will allow users to explore various aspects of this data with ease by filtering and re-ordering on different variables, such as country, geographical location, and sport.
