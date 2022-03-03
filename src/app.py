@@ -1,6 +1,7 @@
 import pandas as pd
 import numpy as np
 import altair as alt
+from vega_datasets import data
 
 data = pd.read_csv("../data/processed/athlete_events_2000.csv")
 # World map 
@@ -67,7 +68,8 @@ def create_world_plot(data, year=None, sport=None, sex=None, season=None):
     country_noc_medals_ids = country_noc_medals_ids[['id', 'country', 'NOC', 'medals', 'Year', 'Sport', 'Season', 'Sex']]
     
     map_click = alt.selection_multi()
-
+    world_map = alt.topo_feature(data.world_110m.url, 'countries')
+    
     world_final_map = (alt.Chart(world_map, title="Number of medals received distributed by country").mark_geoshape().transform_lookup(
         lookup='id',
         from_=alt.LookupData(country_noc_medals_ids, 'id', ['country', 'medals']))
