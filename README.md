@@ -12,7 +12,7 @@ This app will provide a dashboard that summarizes a few of the key statistics th
 
 **Gender Equality**
 
-![Gender_Equality](images/gender_equality.png)
+![Dashboard](reports/Dashboard.png)
 
 Within the 'Gender Equality' tab, we will provide a line chart in the top right panel to indicate the number of medals received by athletes, color-coded by biological sex. The bottom two panels that accompany the line chart will allow the user to interactively select which country they would like to filter for via a drop-down menu bar. Notably, each panel will interact with the drop-down menu that allows the user to select a country. Other information provided in this tab will demonstrate the number of total medals received and the total number of athletes within the filtered country and a specified year.
 
