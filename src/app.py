@@ -2,6 +2,8 @@ import pandas as pd
 import numpy as np
 import altair as alt
 from vega_datasets import data
+from dash import Dash, html, dcc, Input, Output
+import dash_bootstrap_components as dbc
 
 data = pd.read_csv("../data/processed/athlete_events_2000.csv")
 
@@ -84,7 +86,7 @@ def create_world_plot(data, year=None, sport=None, sex=None):
     )
     map_display = background + world_final_map
     
-    return map_display
+    return map_display.to_html()
 
 # Gender/medal plot
 def create_gender_medal_plot(data, year=None, sport=None, sex=None):
@@ -190,4 +192,114 @@ def create_age_plot(data, year=None, sport=None, sex=None):
     )).configure_axis(grid=False).configure_view(
     strokeWidth=0
 )
-    return hist
+    return hist.to_html()
+
+# Setup app layout
+app = Dash(external_stylesheets=[dbc.themes.BOOTSTRAP])
+server = app.server
+
+
+app.layout = dbc.Container([
+    dbc.Tabs([
+        dbc.Tab([
+            html.H1('A heading'),
+            html.P('With a help paragraph')],
+            label='Analysis'),
+    dbc.Row(html.Div(
+        html.H1("Olympics Data Visualization", style={'backgroundColor':'blue'})
+    )),
+    dbc.Row([
+        dbc.Col([
+            html.P("Select year"),
+            dcc.Dropdown(
+                    id="dropdown",
+                    options=data.Year.unique().tolist(),
+                    value=["year"]
+            )
+        ],
+        md=4, style={'border': '1px solid #d3d3d3', 'width': '20%', 'border-radius': '10px'},
+             style={"backgroundColor": "#94e1f2"}), 
+
+        dbc.Col([
+            html.P("Select Sex"),
+            dcc.Dropdown(
+                    id="dropdown",
+                    options=data.Sex.unique().tolist(),
+                    value=["sex"]
+        )],
+        md=4, style={'border': '1px solid #d3d3d3', 'width': '20%', 'border-radius': '10px'},
+             style={"backgroundColor": "#94e1f2"}),
+
+        dbc.Col([
+            html.P("Select Sport"),
+            dcc.Dropdown(
+                    id="dropdown",
+                    options=data.Sport.unique().tolist(),
+                    value=["sport"]
+        )],
+        md=4, style={'border': '1px solid #d3d3d3', 'width': '20%', 'border-radius': '10px'})
+    ]),
+    dbc.Row([
+        html.Iframe(
+            id='world_map',
+            srcDoc = create_world_plot(data, year=2000, sport="Ice Hockey", sex="Female"),
+            style={'border-width': '0', 'width': '100%', 'height': '500px'}
+        ),
+
+        dbc.Row([
+            dbc.Col([
+                html.Iframe(
+                    id="gender_medals",
+                    srcDoc = create_gender_medal_plot(year=2000, sport="Ice Hockey", sex="Female"),
+                    style={
+                        "border-width": "1",
+                        "width": "100%",
+                        "height": "300px",
+                        "top": "20%",
+                        "left": "70%",
+                    }
+                ) 
+            ]),
+            dbc.Col([
+                html.Iframe(
+                    id="age_plot",
+                    srcDoc = create_age_plot(year=2000, sport="Ice Hockey", sex="Female"),
+                    style={
+                        "border-width": "1",
+                        "width": "100%",
+                        "height": "300px",
+                        "top": "20%",
+                        "left": "70%"
+                    }
+                )
+            ])
+        ]),
+        dbc.Tab('An interactive dashboard demonstrating statistics regarding the Summer and Winter Olympic Games from 2000 to 2016.', label='About the project')])
+    ])
+])
+
+
+@app.callback(
+    [Output("world_map", "srcDoc"),
+     Output("gender_plot", "srcDoc"),
+     Output("age_plot", "srcDoc")],
+    
+    [Input("dropdown", "year"),
+    Input("dropdown", "sex"),
+    Input("dropdown", "sport")]
+)
+def update_output(year, country):
+    map = create_world_plot(year)
+    gender_plot = create_gender_medal_plot(year=2021, 
+                                           sport="Ice Hockey", 
+                                           sex="Female"
+                                           )
+    age_plot = create_age_plot(year=2021, 
+                               sport="Ice Hockey", 
+                               sex="Female"
+                               )
+
+    return map, gender_plot, age_plot 
+
+if __name__ == '__main__':
+    app.run_server(debug=True)
