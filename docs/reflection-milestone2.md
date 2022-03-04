@@ -16,7 +16,7 @@ From the milestone 1, we have not included the three separate tabs like we initi
 
 Our current dashboard has many of the basic functionalities that we planned to have from Milestone 1, including the capabilities of:
 
--   Interactive dropdown options for users to select Year, Country and Season for all the plots
+-   Interactive dropdown options for users to select Year and Country for all the plots
 
 -   A tool tip which indicates the country and number of medals won by it
 
