@@ -38,7 +38,7 @@ Thank you for your interest in contributing to our project! Here are some instru
 
 *Installation instructions*
 
-Install any of the required dependencies for our application:
+Install all of the required dependencies for our application:
 
 
 | Package                     | Command Line                |
