@@ -1,4 +1,3 @@
-from select import select
 import pandas as pd
 import numpy as np
 import altair as alt
@@ -12,111 +11,77 @@ data = pd.read_csv("/app/data/processed/athlete_events_2000.csv")
 app = Dash(external_stylesheets=[dbc.themes.BOOTSTRAP])
 server = app.server
 
-dropdown_list = sorted(list(data['Year'].unique()), reverse=True)
-season = data['Season'].unique()[0]
-
-tabs_styles = {
-    'height': '60px',
-    'width': '100%',
-    'backgroundColor': '#1C4E80'
-}
-tab_style = {
-    'borderBottom': '1px solid #d6d6d6',
-    'padding': '2px',
-    'fontWeight': 'bold',
-    "marginLeft": "auto"
-}
-
-tab_selected_style = {
-    'borderTop': '1px solid #d6d6d6',
-    'color': 'white',
-    'padding': '10px',
-    'float': 'left',
-    'width': '100%',
-    'height': '50px'
-}
-
-content = "An interactive dashboard demonstrating statistics regarding the Summer and Winter Olympic Games from 2002 to 2016.This app will provide a dashboard that summarizes a few of the key statistics that we have extracted from this data. Specifically, our dashboard aims to provide accessible visuals that demonstrate the differences in biological sex, geographic location, and physical characteristics of athletes and how these factors impact performance within the Olympic Games."
+content = "An interactive dashboard demonstrating statistics regarding the Summer and Winter Olympic Games from 2000 to 2016.This app will provide a dashboard that summarizes a few of the key statistics that we have extracted from this data. Specifically, our dashboard aims to provide accessible visuals that demonstrate the differences in biological sex, geographic location, and physical characteristics of athletes and how these factors impact performance within the Olympic Games."
 app.layout = dbc.Container([
-    dbc.Row(
-                dbc.Col(html.Div(style=tab_selected_style, children=[
-                    html.H2("Olympics Data Visualization")]
-                ), width="auto")
-            ),
-    html.Br(),
     dbc.Tabs([
         dbc.Tab([
-            html.Br(),
+            dbc.Row(
+                html.Div(
+                    html.H1("Olympics Data Visualization", style={'backgroundColor':'#7FCFBD'})
+                )
+            ),
             dbc.Row([
                 dbc.Col([
-                    html.P("Year", style={'textAlign': 'center'}),
+                    html.P("Select year"),
                     dcc.Dropdown(
                         id="year_dropdown",
-                        options=[{'label': i, 'value': i} for i in dropdown_list],
-                        value=2016
+                        options=[2000, 2002, 2004, 2006, 2008, 2010, 2012, 2014, 2016],
+                        value=2000
                     )
                 ]),
                 dbc.Col([
-                    html.P("Gender", style={'textAlign': 'center'}),
+                    html.P("Select Sex"),
                     dcc.Dropdown(
                         id="sex_dropdown",
-                        options=data.Sex.unique().tolist()
+                        options=data.Sex.unique().tolist(),
+                        value="Female"
                     )
                 ]),
                 dbc.Col([
-                    html.P("Sport", style={'textAlign': 'center'}),
+                    html.P("Select Sport"),
                     dcc.Dropdown(
                         id="sport_dropdown",
-                        options=data.Sport.unique().tolist()
+                        options=data.Sport.unique().tolist(),
+                        value="Ice Hockey"
                     )
                 ])
             ]),
-            html.Br(),
             dbc.Row([
-                dbc.Col(
                 html.Iframe(
                     id='world_map',
                     #srcDoc = create_world_plot(data, year=2000, sport="Ice Hockey", sex="Female"),
-                    style={'border-width': '0', 'width': '100%', 'height': '750px'})
+                    style={'border-width': '0', 'width': '100%', 'height': '300px'}
                 )
             ]),
-            html.Br(),
             dbc.Row([
                 dbc.Col([
                     html.Iframe(
                         id="gender_medals",
                         #srcDoc = create_gender_medal_plot(data, year=2000, sport="Ice Hockey", sex="Female"),
                         style={
+                            "border-width": "1",
                             "width": "100%",
-                            "height": "400px"
+                            "height": "300px"
                         }
                     )
                 ]),
-
                 dbc.Col([
                     html.Iframe(
                         id="age_plot",
                         #srcDoc = create_age_plot(data, year=2000, sport="Ice Hockey", sex="Female"),
                         style={
+                            "border-width": "1",
                             "width": "100%",
-                            "height": "400px"
+                            "height": "300px"
                         }
                     )
-                ], style={'border-style': None})
-            ]),
-            html.Br(),
-            dbc.Alert(
-            [
-                "Checkout the ",
-                html.A("GitHub repo", href="https://github.com/UBC-MDS/olympics_data_analysis/tree/main", className="alert-link"),
-                " for the sourcecode."
-            ],
-            color="primary",
-        ),
-        ], label="Analysis", style=tab_style),
-        dbc.Tab(content, label='About the project', style=tab_style)
-    ]),
-], style=tabs_styles)    
+                ])
+            ])
+        ], label="Analysis"),
+        dbc.Tab(content, label='About the project')
+    ])
+], style = {'background-color': '#89bfcc'})
+    
 
 
 @app.callback(
@@ -149,7 +114,7 @@ def create_world_plot(year=None, sport=None, sex=None):
     >>> create_world_plot(year=2014, sport="Ice Hockey", sex="Male")
     >>> create_world_plot(year=2014)
     """
-    
+    data = pd.read_csv("/app/data/processed/athlete_events_2000.csv")
     if not isinstance(year, int) and year is not None:
         raise TypeError("year should be of type 'int'")
     if not isinstance(sport, str) and sport is not None:
@@ -157,7 +122,12 @@ def create_world_plot(year=None, sport=None, sex=None):
     if not isinstance(sex, str) and sex is not None:
         raise TypeError("sex should be of type 'str'")
     
-    data = filter_data(year, sport, sex)
+    if year is not None:
+        data = data[data["Year"] == year]
+    if sport is not None:
+        data = data[data["Sport"] == sport]
+    if sex is not None:
+        data = data[data["Sex"] == sex]
         
     data_2 = data[['NOC', 'Medal', 'Year', 'Sport', 'Sex']].groupby(
     ['NOC', 'Year', 'Sport', 'Sex']).agg(
@@ -178,14 +148,14 @@ def create_world_plot(year=None, sport=None, sex=None):
     map_click = alt.selection_multi()
     world_map = alt.topo_feature(v_data.world_110m.url, 'countries')
     
-    world_final_map = (alt.Chart(world_map, title="Number of medals received by country").mark_geoshape().transform_lookup(
+    world_final_map = (alt.Chart(world_map, title="Number of medals received distributed by country").mark_geoshape().transform_lookup(
         lookup='id',
         from_=alt.LookupData(country_noc_medals_ids, 'id', ['country', 'medals']))
      .encode(tooltip=['country:O', 'medals:Q'], 
              color='medals:Q', 
              opacity=alt.condition(map_click, alt.value(1), alt.value(0.2)))
      .add_selection(map_click)
-     .project('equalEarth', scale=300).properties(
+     .project('equalEarth', scale=90).properties(
         width=700,
         height=400
     ))
@@ -193,9 +163,9 @@ def create_world_plot(year=None, sport=None, sex=None):
     background = alt.Chart(world_map).mark_geoshape(
         fill='lightgray',
         stroke='white'
-    ).project('equalEarth', scale=200).properties(
-        width=950,
-        height=700
+    ).project('equalEarth', scale=90).properties(
+        width=700,
+        height=400
     )
     map_display = background + world_final_map
     
@@ -231,6 +201,7 @@ def create_gender_medal_plot(year=None, sport=None, sex=None):
     >>> create_gender_medal_plot(year=2014, sport="Ice Hockey", sex="Male")
     >>> create_gender_medal_plot(year=2014)
     """
+    data = pd.read_csv("/app/data/processed/athlete_events_2000.csv")
    
     if not isinstance(year, int) and year is not None:
             raise TypeError("year should be of type 'int'")
@@ -239,13 +210,16 @@ def create_gender_medal_plot(year=None, sport=None, sex=None):
     if not isinstance(sex, str) and sex is not None:
         raise TypeError("sex should be of type 'str'")
 
-    data = filter_data(year, sport)
+    if year is not None:
+        data = data[data["Year"] == year]
+    if sport is not None:
+        data = data[data["Sport"] == sport]
     
     colors = ['#d95f0e', '#fec44f', 'silver']
 
-    bars = alt.Chart(data, title="Medal Distribution by Gender in Olympics after 2000's").encode(x=alt.X('Sex:N', title=''),
+    bars = alt.Chart(data, title="Medal Distribution by Gender in Olympics after 2000's").encode(x=alt.X('Sex:N', title='Sex'),
                                  y=alt.Y('count(Medal):Q', title=f'Olympic Medals won in {year}'),
-                                 color = alt.Color('Medal', scale=alt.Scale(scheme='greenblue'))).mark_bar()
+                                 color = alt.Color('Medal', scale=alt.Scale(range=colors))).mark_bar()
 
     text = bars.mark_text(
     align='center',
@@ -288,6 +262,7 @@ def create_age_plot(year=None, sport=None, sex=None):
     >>> create_age_plot(year=2014, sport="Ice Hockey", sex="Male")
     >>> create_age_plot(year=2014)
     """
+    data = pd.read_csv("/app/data/processed/athlete_events_2000.csv")
     if not isinstance(year, int) and year is not None:
         raise TypeError("year should be of type 'int'")
     if not isinstance(sport, str) and sport is not None:
@@ -295,35 +270,20 @@ def create_age_plot(year=None, sport=None, sex=None):
     if not isinstance(sex, str) and sex is not None:
         raise TypeError("sex should be of type 'str'")
     
-    data = filter_data(year, sport, sex)
-        
-    hist = (alt.Chart(data, title="Number of medals received distributed by age").mark_bar(size=6.5).encode(
-        x=alt.X("Age:Q", title="Age (Years)", axis=alt.Axis(grid=False)),
-        y=alt.Y("count():Q", title="Number of medals received", axis=alt.Axis(grid=False)),
-        tooltip=alt.Tooltip(['count():Q'], title="Number of Medals Received")
-    )).configure_axis(grid=False).configure_view(
-    strokeWidth=0
-)
-    return hist.to_html()
-
-@app.callback(
-    Output("world_map", "srcDoc"),
-    Input("year_dropdown", "value"),
-    Input("sport_dropdown", "value"),
-    Input("sex_dropdown", "value")
-)
-def filter_data(year=None, sport=None, sex=None):
-    data = pd.read_csv("/app/data/processed/athlete_events_2000.csv")
     if year is not None:
         data = data[data["Year"] == year]
     if sport is not None:
         data = data[data["Sport"] == sport]
     if sex is not None:
         data = data[data["Sex"] == sex]
-    if medal is not None:
-        data = data[data["Medal"] == medal]
-    
-    return data
+        
+    hist = (alt.Chart(data, title="Number of medals received distributed by age").mark_bar(size=6.5).encode(
+        x=alt.X("Age:Q", title="Age (Years)", axis=alt.Axis(grid=False)),
+        y=alt.Y("count():Q", title="Number of medals received", axis=alt.Axis(grid=False))
+    )).configure_axis(grid=False).configure_view(
+    strokeWidth=0
+).configure(background='#89bfcc')
+    return hist.to_html()
 
 if __name__ == '__main__':
     app.run_server(debug=True)
