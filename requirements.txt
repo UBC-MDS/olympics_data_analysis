@@ -1,0 +1,5 @@
+pandas
+gunicorn
+altair
+dash
+dash_bootstrap_components
