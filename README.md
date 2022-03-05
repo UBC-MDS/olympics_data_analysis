@@ -7,15 +7,12 @@ We hope you learn something new about the Olympic Games, or that we can inspire 
 
 ## What Can You Do Here?
 
-* [A Quick Demo For You](#app-demonstration)
 * [Why Analyze The Olympics?](#motivation)
 * [Interested In Contributing?](#contribute-to-the-cause)
 * [Get In Touch With Us](#get-in-contact-with-us)
 * [Contributing Guidelines](#contributing)
 * [License](#license)
 
-## App Demonstration
-![Dashboard](reports/Dashboard.png)
 
 ## Motivation
 
