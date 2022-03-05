@@ -1,7 +1,7 @@
 
 # Olympic Games Analysis Visualization Project
 
-Welcome to our Olympic Games Analysis Dashboard! Our dashboard is currently deployed as a herokuapp [here](linkherokuapphere)
+Welcome to our Olympic Games Analysis Dashboard! Our dashboard is currently deployed as a herokuapp [here](https://olympic-dash-app.herokuapp.com/)
 
 We hope you learn something new about the Olympic Games, or that we can inspire you to contribute to our ongoing project.
 
