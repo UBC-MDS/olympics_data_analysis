@@ -173,6 +173,26 @@ def create_world_plot(year=None, sport=None, sex=None):
     noc = pd.read_csv("/app/data/processed/noc_regions.csv")
     noc = noc[['NOC', 'region']]
     
+    noc['region'][noc['region'] == 'USA'] = 'United States'
+    noc['region'][noc['region'] == 'Boliva'] = 'Bolivia, Plurinational State of'
+    noc['region'][noc['region'] == 'Brunei'] = 'Brunei Darussalam'
+    noc['region'][noc['region'] == 'Republic of Congo'] = 'Congo'
+    noc['region'][noc['region'] == 'Democratic Republic of the Congo'] = 'Congo, the Democratic Republic of the'
+    noc['region'][noc['region'] == 'Ivory Coast'] = '''Cote d'Ivoire'''
+    noc['region'][noc['region'] == 'Iran'] = 'Iran, Islamic Republic of'
+    noc['region'][noc['region'] == 'North Korea'] = '''Korea, Democratic People's Republic of'''
+    noc['region'][noc['region'] == 'South Korea'] = 'Korea, Republic of'
+    noc['region'][noc['region'] == 'Moldova'] = 'Moldova, Republic of'
+    noc['region'][noc['region'] == 'Palestine'] = 'Palestinian Territory, Occupied'
+    noc['region'][noc['region'] == 'Russia'] = 'Russian Federation'
+    noc['region'][noc['region'] == 'Syria'] = 'Syrian Arab Republic'
+    noc['region'][noc['region'] == 'Taiwan'] = 'Taiwan, Province of China'
+    noc['region'][noc['region'] == 'Tanzania'] = 'Tanzania, United Republic of'
+    noc['region'][noc['region'] == 'Trinidad'] = 'Trinidad and Tobago'
+    noc['region'][noc['region'] == 'UK'] = 'United Kingdom'
+    noc['region'][noc['region'] == 'Venezuela'] = 'Venezuela, Bolivarian Republic of'
+    noc['region'][noc['region'] == 'Vietnam'] = 'Viet Nam'
+    
     country_noc_ids = noc.merge(country_ids, how='inner', left_on='region', right_on='name')
     country_noc_ids = country_noc_ids[country_noc_ids["NOC"]!="NFL"]
     country_noc_ids = country_noc_ids[['id', 'name', 'NOC']].rename(columns = {'name': 'country'})
