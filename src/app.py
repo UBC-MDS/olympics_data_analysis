@@ -204,7 +204,7 @@ def create_world_plot(year=None, sport=None, sex=None):
     )
     map_display = background + world_final_map
     
-    return map_display.to_html()
+    return map_display.configure_view(strokeWidth=0).to_html()
 
 
 
@@ -252,8 +252,8 @@ def create_gender_medal_plot(year=None, sport=None, sex=None):
     
     colors = ['#d95f0e', '#fec44f', 'silver']
 
-    bars = alt.Chart(data, title="Medal Distribution by Gender in Olympics after 2000's").encode(x=alt.X('Sex:N', title=''),
-                                 y=alt.Y('count(Medal):Q', title=f'Olympic Medals won in {year}'),
+    bars = alt.Chart(data, title="Medal Distribution by Gender in Olympics after 2000's").encode(x=alt.X('Sex:N', title='', axis=alt.Axis(grid=False)),
+                                 y=alt.Y('count(Medal):Q', title=f'Olympic Medals won in {year}', axis=alt.Axis(grid=False)),
                                  color = alt.Color('Medal', scale=alt.Scale(scheme='greenblue'))).mark_bar()
 
     text = bars.mark_text(
@@ -267,7 +267,7 @@ def create_gender_medal_plot(year=None, sport=None, sex=None):
 
     chart = (bars+text).properties(height=200, width=100).facet(facet=alt.Facet('Medal:N', title=None, header=alt.Header(labelExpr="''"))).configure_axisX(labelAngle=0)  
 
-    return chart.to_html()
+    return chart.configure_view(strokeWidth=0).to_html()
 
 @app.callback(
     Output("age_plot", "srcDoc"),
@@ -314,7 +314,8 @@ def create_age_plot(year=None, sport=None, sex=None):
         
     hist = (alt.Chart(data, title="Number of medals received distributed by age").mark_bar(size=6.5).encode(
         x=alt.X("Age:Q", title="Age (Years)", axis=alt.Axis(grid=False)),
-        y=alt.Y("count():Q", title="Number of medals received", axis=alt.Axis(grid=False))
+        y=alt.Y("count():Q", title="Number of medals received", axis=alt.Axis(grid=False)),
+        tooltip=alt.Tooltip(['count():Q'], title="Number of Medals Received")
     )).configure_axis(grid=False).configure_view(
     strokeWidth=0
 )
