@@ -77,7 +77,7 @@ app.layout = dbc.Container([
                 html.Iframe(
                     id='world_map',
                     #srcDoc = create_world_plot(data, year=2000, sport="Ice Hockey", sex="Female"),
-                    style={'border-width': '0', 'width': '100%', 'height': '450px'})
+                    style={'border-width': '0', 'width': '100%', 'height': '750px'})
                 )
             ]),
             html.Br(),
@@ -198,9 +198,9 @@ def create_world_plot(year=None, sport=None, sex=None):
     background = alt.Chart(world_map).mark_geoshape(
         fill='lightgray',
         stroke='white'
-    ).project('equalEarth', scale=90).properties(
-        width=700,
-        height=400
+    ).project('equalEarth', scale=200).properties(
+        width=950,
+        height=700
     )
     map_display = background + world_final_map
     
