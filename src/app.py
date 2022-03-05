@@ -80,7 +80,7 @@ app.layout = dbc.Container([
         ], label="Analysis"),
         dbc.Tab(content, label='About the project')
     ])
-])
+], style = {'background-color': '#89bfcc'})
     
 
 
@@ -278,11 +278,11 @@ def create_age_plot(year=None, sport=None, sex=None):
         data = data[data["Sex"] == sex]
         
     hist = (alt.Chart(data, title="Number of medals received distributed by age").mark_bar(size=6.5).encode(
-        x=alt.X("Age:Q", title="Age (Years)"),
-        y=alt.Y("count():Q", title="Number of medals received")
+        x=alt.X("Age:Q", title="Age (Years)", axis=alt.Axis(grid=False)),
+        y=alt.Y("count():Q", title="Number of medals received", axis=alt.Axis(grid=False))
     )).configure_axis(grid=False).configure_view(
     strokeWidth=0
-)
+).configure(background='#89bfcc')
     return hist.to_html()
 
 if __name__ == '__main__':
