@@ -25,7 +25,7 @@ app.layout = dbc.Container([
                     html.P("Select year"),
                     dcc.Dropdown(
                         id="year_dropdown",
-                        options=data.Year.unique().tolist(),
+                        options=[2000, 2002, 2004, 2006, 2008, 2010, 2012, 2014, 2016],
                         value=2000
                     )
                 ]),
