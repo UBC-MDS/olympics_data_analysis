@@ -149,7 +149,7 @@ def create_world_plot(year=None, sport=None, sex=None):
     >>> create_world_plot(year=2014, sport="Ice Hockey", sex="Male")
     >>> create_world_plot(year=2014)
     """
-    data = pd.read_csv("/app/data/processed/athlete_events_2000.csv")
+    
     if not isinstance(year, int) and year is not None:
         raise TypeError("year should be of type 'int'")
     if not isinstance(sport, str) and sport is not None:
@@ -157,12 +157,7 @@ def create_world_plot(year=None, sport=None, sex=None):
     if not isinstance(sex, str) and sex is not None:
         raise TypeError("sex should be of type 'str'")
     
-    if year is not None:
-        data = data[data["Year"] == year]
-    if sport is not None:
-        data = data[data["Sport"] == sport]
-    if sex is not None:
-        data = data[data["Sex"] == sex]
+    data = filter_data(year, sport, sex)
         
     data_2 = data[['NOC', 'Medal', 'Year', 'Sport', 'Sex']].groupby(
     ['NOC', 'Year', 'Sport', 'Sex']).agg(
@@ -236,7 +231,6 @@ def create_gender_medal_plot(year=None, sport=None, sex=None):
     >>> create_gender_medal_plot(year=2014, sport="Ice Hockey", sex="Male")
     >>> create_gender_medal_plot(year=2014)
     """
-    data = pd.read_csv("/app/data/processed/athlete_events_2000.csv")
    
     if not isinstance(year, int) and year is not None:
             raise TypeError("year should be of type 'int'")
@@ -245,10 +239,7 @@ def create_gender_medal_plot(year=None, sport=None, sex=None):
     if not isinstance(sex, str) and sex is not None:
         raise TypeError("sex should be of type 'str'")
 
-    if year is not None:
-        data = data[data["Year"] == year]
-    if sport is not None:
-        data = data[data["Sport"] == sport]
+    data = filter_data(year, sport)
     
     colors = ['#d95f0e', '#fec44f', 'silver']
 
@@ -297,7 +288,6 @@ def create_age_plot(year=None, sport=None, sex=None):
     >>> create_age_plot(year=2014, sport="Ice Hockey", sex="Male")
     >>> create_age_plot(year=2014)
     """
-    data = pd.read_csv("/app/data/processed/athlete_events_2000.csv")
     if not isinstance(year, int) and year is not None:
         raise TypeError("year should be of type 'int'")
     if not isinstance(sport, str) and sport is not None:
@@ -305,20 +295,29 @@ def create_age_plot(year=None, sport=None, sex=None):
     if not isinstance(sex, str) and sex is not None:
         raise TypeError("sex should be of type 'str'")
     
+    data = filter_data(year, sport, sex)
+        
+    hist = (alt.Chart(data, title="Number of medals received distributed by age").mark_bar(size=6.5).encode(
+        x=alt.X("Age:Q", title="Age (Years)", axis=alt.Axis(grid=False)),
+        y=alt.Y("count():Q", title="Number of medals received", axis=alt.Axis(grid=False)),
+        tooltip=alt.Tooltip(['count():Q'], title="Number of Medals Received")
+    )).configure_axis(grid=False).configure_view(
+    strokeWidth=0
+)
+    return hist.to_html()
+
+def filter_data(year=None, sport=None, sex=None):
+    data = pd.read_csv("athlete_events.csv")
     if year is not None:
         data = data[data["Year"] == year]
     if sport is not None:
         data = data[data["Sport"] == sport]
     if sex is not None:
         data = data[data["Sex"] == sex]
-        
-    hist = (alt.Chart(data, title="Number of medals received distributed by age").mark_bar(size=6.5).encode(
-        x=alt.X("Age:Q", title="Age (Years)", axis=alt.Axis(grid=False)),
-        y=alt.Y("count():Q", title="Number of medals received", axis=alt.Axis(grid=False))
-    )).configure_axis(grid=False).configure_view(
-    strokeWidth=0
-)
-    return hist.to_html()
+    if medal is not None:
+        data = data[data["Medal"] == medal]
+    
+    return data
 
 if __name__ == '__main__':
     app.run_server(debug=True)
