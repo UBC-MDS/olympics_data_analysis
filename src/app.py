@@ -203,6 +203,29 @@ def create_world_plot(year=None, sport=None, sex=None):
     map_click = alt.selection_multi()
     world_map = alt.topo_feature(v_data.world_110m.url, 'countries')
     
+    if (year is None) & (sex is None) & (sport is None):
+        country_noc_medals_ids = country_noc_medals_ids.groupby(['id', 'country'])['medals'].agg('sum').reset_index()
+    elif (year is None) & (sex is None) & (sport is not None):
+        country_noc_medals_ids = country_noc_medals_ids.groupby(['id', 'Sport' 'country'])['medals'].agg('sum').reset_index()
+        country_noc_medals_ids = country_noc_medals_ids[(country_noc_medals_ids.Sport == sport)]
+    elif (year is None) & (sex is not None) & (sport is not None):
+        country_noc_medals_ids = country_noc_medals_ids.groupby(['id', 'Sport', 'Sex', 'country'])['medals'].agg('sum').reset_index()
+        country_noc_medals_ids = country_noc_medals_ids[(country_noc_medals_ids.Sport == sport) & (country_noc_medals_ids.Sex == sex)]
+    elif (year is not None) & (sex is None) & (sport is not None):
+        country_noc_medals_ids = country_noc_medals_ids.groupby(['id', 'Sport', 'Year', 'country'])['medals'].agg('sum').reset_index()
+        country_noc_medals_ids = country_noc_medals_ids[(country_noc_medals_ids.Sport == sport) & (country_noc_medals_ids.Year == year)]
+    elif (year is not None) & (sex is not None) & (sport is None):
+        country_noc_medals_ids = country_noc_medals_ids.groupby(['id', 'Sex', 'Year', 'country'])['medals'].agg('sum').reset_index()
+        country_noc_medals_ids = country_noc_medals_ids[(country_noc_medals_ids.Sex == sex) & (country_noc_medals_ids.Year == year)]
+    elif (year is not None) & (sex is None) & (sport is None):
+        country_noc_medals_ids = country_noc_medals_ids.groupby(['id', 'Year', 'country'])['medals'].agg('sum').reset_index()
+        country_noc_medals_ids = country_noc_medals_ids[(country_noc_medals_ids.Year == year)]
+    elif (year is None) & (sex is not None) & (sport is None):
+        country_noc_medals_ids = country_noc_medals_ids.groupby(['id', 'Sex', 'country'])['medals'].agg('sum').reset_index()
+        country_noc_medals_ids = country_noc_medals_ids[(country_noc_medals_ids.Sex == sex)]
+    else:
+        country_noc_medals_ids = country_noc_medals_ids.groupby(['id', 'Sex', 'Sport', 'Year', 'country'])['medals'].agg('sum').reset_index()
+    
     world_final_map = (alt.Chart(world_map, title="Number of medals received by country").mark_geoshape().transform_lookup(
         lookup='id',
         from_=alt.LookupData(country_noc_medals_ids, 'id', ['country', 'medals']))
