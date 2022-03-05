@@ -135,7 +135,7 @@ def create_world_plot(year=None, sport=None, sex=None):
     
     country_ids = pd.read_csv('/app/data/processed/country-ids.csv')
     
-    noc = pd.read_csv("app/data/processed/noc_regions.csv")
+    noc = pd.read_csv("/app/data/processed/noc_regions.csv")
     noc = noc[['NOC', 'region']]
     
     country_noc_ids = noc.merge(country_ids, how='inner', left_on='region', right_on='name')
