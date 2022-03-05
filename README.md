@@ -7,6 +7,7 @@ We hope you learn something new about the Olympic Games, or that we can inspire 
 
 ## Welcome!
 
+* [Here is a quick demo of our app](#app-demonstration)
 * [Why Analyze The Olympics?](#motivation)
 * [Interested In Contributing?](#contribute-to-the-cause)
 * [Get In Touch With Us](#get-in-contact-with-us)
@@ -14,6 +15,12 @@ We hope you learn something new about the Olympic Games, or that we can inspire 
 * [License](#license)
 * [Reflecting on Our Project](https://github.com/UBC-MDS/olympics_data_analysis/blob/main/docs/reflection-milestone2.md)
 
+
+## App Demonstration
+
+<p align="center">
+  <img width="600" height="400" src="https://media.giphy.com/media/Fsx8KoF0Ko0Q0C0JZm/giphy.gif">
+</p>
 
 ## Motivation
 
