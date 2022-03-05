@@ -5,7 +5,7 @@ from vega_datasets import data as v_data
 from dash import Dash, html, dcc, Input, Output
 import dash_bootstrap_components as dbc
 
-data = pd.read_csv("../data/processed/athlete_events_2000.csv")
+data = pd.read_csv("app/data/processed/athlete_events_2000.csv")
 
 # Setup app layout.
 app = Dash(external_stylesheets=[dbc.themes.BOOTSTRAP])
@@ -114,7 +114,7 @@ def create_world_plot(year=None, sport=None, sex=None):
     >>> create_world_plot(year=2014, sport="Ice Hockey", sex="Male")
     >>> create_world_plot(year=2014)
     """
-    data = pd.read_csv("../data/processed/athlete_events_2000.csv")
+    data = pd.read_csv("app/data/processed/athlete_events_2000.csv")
     if not isinstance(year, int) and year is not None:
         raise TypeError("year should be of type 'int'")
     if not isinstance(sport, str) and sport is not None:
@@ -135,7 +135,7 @@ def create_world_plot(year=None, sport=None, sex=None):
     
     country_ids = pd.read_csv('../data/processed/country-ids.csv')
     
-    noc = pd.read_csv("../data/processed/noc_regions.csv")
+    noc = pd.read_csv("app/data/processed/noc_regions.csv")
     noc = noc[['NOC', 'region']]
     
     country_noc_ids = noc.merge(country_ids, how='inner', left_on='region', right_on='name')
@@ -201,7 +201,7 @@ def create_gender_medal_plot(year=None, sport=None, sex=None):
     >>> create_gender_medal_plot(year=2014, sport="Ice Hockey", sex="Male")
     >>> create_gender_medal_plot(year=2014)
     """
-    data = pd.read_csv("../data/processed/athlete_events_2000.csv")
+    data = pd.read_csv("app/data/processed/athlete_events_2000.csv")
    
     if not isinstance(year, int) and year is not None:
             raise TypeError("year should be of type 'int'")
@@ -262,7 +262,7 @@ def create_age_plot(year=None, sport=None, sex=None):
     >>> create_age_plot(year=2014, sport="Ice Hockey", sex="Male")
     >>> create_age_plot(year=2014)
     """
-    data = pd.read_csv("../data/processed/athlete_events_2000.csv")
+    data = pd.read_csv("app/data/processed/athlete_events_2000.csv")
     if not isinstance(year, int) and year is not None:
         raise TypeError("year should be of type 'int'")
     if not isinstance(sport, str) and sport is not None:
