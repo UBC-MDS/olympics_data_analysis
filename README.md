@@ -38,19 +38,16 @@ Thank you for your interest in contributing to our project! Here are some instru
 
 *Installation instructions*
 
-Install any of the required dependencies for our application:
+Install all of the required dependencies for our application:
 
 
 | Package                     | Command Line                |
 |-----------------------------|---------------------------------------|
 |         pandas              |         conda install pandas          |
-|        numpy            |                   |
-|                      |      |
-|                 |             |
-| |  |
-|              |    |
-|                      |                    |
-|                         |                       |
+|        numpy            |         pip install altair vega_datasets          |
+|        dash              |   conda install -c conda-forge dash   |
+|       dash bootstrap components          |     pip install dash-bootstrap-components        |
+
 
 
 Next, clone our repository and navigate into the root of our project. You can then run the following command in your terminal to initiate a local version of the application:
