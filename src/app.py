@@ -80,7 +80,7 @@ app.layout = dbc.Container([
         ], label="Analysis"),
         dbc.Tab(content, label='About the project')
     ])
-])
+], style = {'display': 'fixed', 'height': '100%', 'background-color': '#89bfcc'})
     
 
 
