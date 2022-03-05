@@ -5,13 +5,14 @@ Welcome to our Olympic Games Analysis Dashboard! Our dashboard is currently depl
 
 We hope you learn something new about the Olympic Games, or that we can inspire you to contribute to our ongoing project.
 
-## What Can You Do Here?
+## Welcome!
 
 * [Why Analyze The Olympics?](#motivation)
 * [Interested In Contributing?](#contribute-to-the-cause)
 * [Get In Touch With Us](#get-in-contact-with-us)
 * [Contributing Guidelines](#contributing)
 * [License](#license)
+* [Reflecting on Our Project](https://github.com/UBC-MDS/olympics_data_analysis/blob/main/docs/reflection-milestone2.md)
 
 
 ## Motivation
