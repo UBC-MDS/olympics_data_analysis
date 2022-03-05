@@ -5,13 +5,14 @@ Welcome to our Olympic Games Analysis Dashboard! Our dashboard is currently depl
 
 We hope you learn something new about the Olympic Games, or that we can inspire you to contribute to our ongoing project.
 
-## What Can You Do Here?
+## Welcome!
 
 * [Why Analyze The Olympics?](#motivation)
 * [Interested In Contributing?](#contribute-to-the-cause)
 * [Get In Touch With Us](#get-in-contact-with-us)
 * [Contributing Guidelines](#contributing)
 * [License](#license)
+* [Reflecting on Our Project](https://github.com/UBC-MDS/olympics_data_analysis/blob/main/docs/reflection-milestone2.md)
 
 
 ## Motivation
@@ -26,7 +27,7 @@ This app will provide a dashboard that summarizes a few of the key statistics th
 
 
 
-Our dashboard will contain a global map to give users easy access to the number of medals received by each country at the Olympic Games within a specified year. Speicific countries can then be selected on the map to filter the remaining plots on the dashboard by the country selected. This will allow the user to observe various statistics about the Olympics for their selected country. Moreover, they will be able to see how many medals were received by their selected country distributed by the age of the athletes. The users will also be able to see the number of bronze, silver, and gold medals received by both male and female individuals within their selected country. Furthermore, we will provide additional functionality to the user to allow them to filter these plots by sport and by year.
+Our dashboard will contain a global map to give users easy access to the number of medals received by each country at the Olympic Games within a specified year. Specific years, sports, and biological sexes can be selected for by using 3 drop-down menus at the top of the dashboard. This will update the map to show each country's performance within the year, sport, and for the biological sex specified. Note that the default behaviour of each drop down menu is to include the overall data. For example, if the user does not select a specific sport, all sports will be included in the analysis. Additionally, users can interact with the plots by hovering their mouse over the map or the age distribution plot. By hovering their mouse over the map, they can obtain exactly how many medals each country received within the specified filters. By hovering over the age distribution plot, the user can obtain how many medals were received by the athletes of a given age. The users will also be able to see the number of bronze, silver, and gold medals received by both male and female individuals. This plot will be updated based on the sport and year specified by the user.
 
 
 ## Contribute To The Cause
