@@ -306,6 +306,12 @@ def create_age_plot(year=None, sport=None, sex=None):
 )
     return hist.to_html()
 
+@app.callback(
+    Output("gender_medals", "srcDoc"),
+    Input("year_dropdown", "value"),
+    Input("sport_dropdown", "value"),
+    Input("sex_dropdown", "value")
+)
 def filter_data(year=None, sport=None, sex=None):
     data = pd.read_csv("athlete_events.csv")
     if year is not None:
