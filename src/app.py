@@ -282,7 +282,7 @@ def create_age_plot(year=None, sport=None, sex=None):
         y=alt.Y("count():Q", title="Number of medals received")
     )).configure_axis(grid=False).configure_view(
     strokeWidth=0
-)
+).configure(background='#89bfcc')
     return hist.to_html()
 
 if __name__ == '__main__':
