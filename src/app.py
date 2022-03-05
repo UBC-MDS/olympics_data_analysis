@@ -312,7 +312,7 @@ def create_age_plot(year=None, sport=None, sex=None):
     if sex is not None:
         data = data[data["Sex"] == sex]
         
-    hist = (alt.Chart(data, title="Number of medals received distributed by age").mark_bar(size=6.5).encode(
+    hist = (alt.Chart(data, title="Number of medals received distributed by age").mark_bar(size=6.5, color='lightblue').encode(
         x=alt.X("Age:Q", title="Age (Years)", axis=alt.Axis(grid=False)),
         y=alt.Y("count():Q", title="Number of medals received", axis=alt.Axis(grid=False)),
         tooltip=alt.Tooltip(['count():Q'], title="Number of Medals Received")
