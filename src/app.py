@@ -7,7 +7,7 @@ import dash_bootstrap_components as dbc
 
 data = pd.read_csv("../data/processed/athlete_events_2000.csv")
 
-# Setup app layout.
+# Setup app layout
 app = Dash(external_stylesheets=[dbc.themes.BOOTSTRAP])
 server = app.server
 
