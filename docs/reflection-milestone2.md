@@ -20,9 +20,7 @@ Our current dashboard has many of the basic functionalities that we planned to h
 
 -   A tool tip which indicates the country and number of medals won by it
 
--   Selecting a particular country which further filters the other two plots to show the distribution across the selected country
-
-The limitations are that we have not included important plots such as whether the host country does better in terms of medals than it did in the previous games or people with what physical parameters are most likely to win a particular sport.
+The limitations are that we have not included important plots such as whether the host country does better in terms of medals than it did in the previous games or people with what physical parameters are most likely to win a particular sport. Selecting a particular country which further filters the other two plots to show the distribution across the selected country is still in the works
 
 ### 4. What are potential improvements and additions
 
