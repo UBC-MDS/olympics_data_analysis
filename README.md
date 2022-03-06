@@ -57,7 +57,9 @@ Install all of the required dependencies for our application:
 
 Next, clone our repository and navigate into the root of our project. You can then run the following command in your terminal to initiate a local version of the application:
 
-`python src/app.py` 
+```
+python src/app.py
+```
 
 The app will run in your local host ip and port, which you can open in a browser of your choice.
 
