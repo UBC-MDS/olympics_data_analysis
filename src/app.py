@@ -7,6 +7,7 @@ from dash import Dash, html, dcc, Input, Output
 import dash_bootstrap_components as dbc
 
 data = pd.read_csv("data/processed/athlete_events_2000.csv")
+logo = "assets/favicon.ico"
 
 # Setup app layout.
 app = Dash(external_stylesheets=[dbc.themes.BOOTSTRAP])
