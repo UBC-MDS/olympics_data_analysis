@@ -41,6 +41,7 @@ content = "An interactive dashboard demonstrating statistics regarding the Summe
 app.layout = dbc.Container([
     dbc.Row(
                 dbc.Col(html.Div(style=tab_selected_style, children=[
+                    html.logo,
                     html.H2("Analyzing the Olympics Over The Years")]
                 ), width="auto")
             ),
