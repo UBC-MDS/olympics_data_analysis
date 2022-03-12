@@ -9,9 +9,9 @@ import dash_bootstrap_components as dbc
 data = pd.read_csv("data/processed/athlete_events_2000.csv")
 logo = "assets/olympics_data_viz.png"
 
-# Setup app layout.
+# Setup app layout
 app = Dash(external_stylesheets=[dbc.themes.BOOTSTRAP])
-app.title = "Olympics Data Visualization"
+app.title = "Analyzing the Olympics Over The Years"
 server = app.server
 
 dropdown_list = sorted(list(data['Year'].unique()), reverse=True)
