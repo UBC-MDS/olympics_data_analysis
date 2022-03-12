@@ -7,10 +7,11 @@ from dash import Dash, html, dcc, Input, Output
 import dash_bootstrap_components as dbc
 
 data = pd.read_csv("data/processed/athlete_events_2000.csv")
-logo = "assets/favicon.ico"
+logo = "assets/olympics_data_viz.png"
 
 # Setup app layout.
 app = Dash(external_stylesheets=[dbc.themes.BOOTSTRAP])
+app.title = "Olympics Data Visualization"
 server = app.server
 
 dropdown_list = sorted(list(data['Year'].unique()), reverse=True)
@@ -39,12 +40,13 @@ tab_selected_style = {
 
 content = "An interactive dashboard demonstrating statistics regarding the Summer and Winter Olympic Games from 2002 to 2016. This app will provide a dashboard that summarizes a few of the key statistics that we have extracted from this data. Specifically, our dashboard aims to provide accessible visuals that demonstrate the differences in biological sex, geographic location, and physical characteristics of athletes and how these factors impact performance within the Olympic Games."
 app.layout = dbc.Container([
-    dbc.Row(
+    dbc.Row([   dbc.Col(html.Img(src=logo, height='60px', width='60px'), 
+                        style={'align':'left'}),
+
                 dbc.Col(html.Div(style=tab_selected_style, children=[
-                    html.logo,
                     html.H2("Analyzing the Olympics Over The Years")]
-                ), width="auto")
-            ),
+                ),style={'textalign': 'centre'})
+    ]),
     html.Br(),
     dbc.Tabs([
         dbc.Tab([
@@ -367,4 +369,4 @@ def create_age_plot(year=None, sport=None, sex=None):
     return hist.to_html()
 
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    app.run_server(debug=True, port=8051)
