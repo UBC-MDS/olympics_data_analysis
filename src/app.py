@@ -40,12 +40,17 @@ tab_selected_style = {
 
 content = "An interactive dashboard demonstrating statistics regarding the Summer and Winter Olympic Games from 2002 to 2016. This app will provide a dashboard that summarizes a few of the key statistics that we have extracted from this data. Specifically, our dashboard aims to provide accessible visuals that demonstrate the differences in biological sex, geographic location, and physical characteristics of athletes and how these factors impact performance within the Olympic Games."
 app.layout = dbc.Container([
-    dbc.Row([   dbc.Col(html.Img(src=logo, height='60px', width='60px'), 
-                        style={'align':'left'}),
-
-                dbc.Col(html.Div(style=tab_selected_style, children=[
-                    html.H2("Analyzing the Olympics Over The Years")]
-                ),style={'textalign': 'centre'})
+    dbc.Row([ dbc.Col(html.Div(style=tab_selected_style, children=[
+                    html.H3("Analyzing the Olympics Over The Years")]
+                ),style={'textalign': 'centre'}),
+              html.Div(style={'float': 'right'}, children=[
+                html.A(
+                    html.Img(
+                        src=logo,
+                        style={'float': 'center', 'height': '55px', 'width': '55px', 'margin-top': '3px', 'margin-bottom': '5px', 'margin-right': '5px', 'padding': '2px'}
+                    ),
+                    href="https://vaex.io/")
+            ])
     ]),
     html.Br(),
     dbc.Tabs([
