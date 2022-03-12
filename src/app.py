@@ -12,7 +12,6 @@ logo = "olympics_data_viz.png"
 # Setup app layout
 app = Dash(external_stylesheets=[dbc.themes.BOOTSTRAP])
 app.title = "Analyzing the Olympics Over the Years"
-app._favicon = "favicon.ico"
 server = app.server
 
 dropdown_list = sorted(list(data['Year'].unique()), reverse=True)
