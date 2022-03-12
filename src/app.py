@@ -366,4 +366,4 @@ def create_age_plot(year=None, sport=None, sex=None):
     return hist.to_html()
 
 if __name__ == '__main__':
-    app.run_server(debug=True, port=8051)
+    app.run_server(debug=True, port=8000)
