@@ -43,7 +43,9 @@ Thank you for your interest in contributing to our project! Here are some instru
 
 *Installation instructions*
 
-Install all of the required dependencies for our application:
+### Manually install our app:
+
+Install all of the required dependencies for our application with the following commands:
 
 
 | Package                     | Command Line                |
@@ -54,7 +56,6 @@ Install all of the required dependencies for our application:
 |       dash bootstrap components          |     pip install dash-bootstrap-components        |
 
 
-
 Next, clone our repository and navigate into the root of our project. You can then run the following command in your terminal to initiate a local version of the application:
 
 ```
@@ -62,6 +63,19 @@ python src/app.py
 ```
 
 The app will run in your local host ip and port, which you can open in a browser of your choice.
+
+### Automatically install our app:
+
+Clone our repository and navigate into the root of our project:
+
+```
+cd olympics_data_analysis
+```
+Next, run the following command to automatically install all of the required dependencies:
+```
+docker-compose up
+```
+The app will run in your local host ip and port, which you can open in a broswer of your choice
 
 If you think about anything you would like to contribute or improve, don't hesitate to contact us!
 
