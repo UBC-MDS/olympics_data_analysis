@@ -10,7 +10,7 @@ data = pd.read_csv("data/processed/athlete_events_2000.csv")
 logo = "olympics_data_viz.png"
 
 # Setup app layout
-app = Dash(external_stylesheets=[dbc.themes.BOOTSTRAP])
+app = Dash(external_stylesheets=[dbc.themes.BOOTSTRAP], assets_external_path = './src/assets/')
 app.title = "Analyzing the Olympics Over the Years"
 server = app.server
 
