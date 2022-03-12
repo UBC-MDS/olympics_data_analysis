@@ -7,11 +7,12 @@ from dash import Dash, html, dcc, Input, Output
 import dash_bootstrap_components as dbc
 
 data = pd.read_csv("data/processed/athlete_events_2000.csv")
-logo = "assets/olympics_data_viz.png"
+logo = "olympics_data_viz.png"
 
 # Setup app layout
 app = Dash(external_stylesheets=[dbc.themes.BOOTSTRAP])
 app.title = "Olympics Data Visualization"
+app._favicon = "favicon.ico"
 server = app.server
 
 dropdown_list = sorted(list(data['Year'].unique()), reverse=True)
@@ -42,15 +43,7 @@ content = "An interactive dashboard demonstrating statistics regarding the Summe
 app.layout = dbc.Container([
     dbc.Row([ dbc.Col(html.Div(style=tab_selected_style, children=[
                     html.H3("Analyzing the Olympics Over The Years")]
-                ),style={'textalign': 'centre'}),
-              html.Div(style={'float': 'right'}, children=[
-                html.A(
-                    html.Img(
-                        src=app.get_asset_url("olympics_data_viz.png"),
-                        style={'float': 'center', 'height': '45px', 'width': '45px', 'margin-top': '3px', 'margin-bottom': '5px', 'margin-right': '5px', 'padding': '2px'}
-                    ),
-                    href="https://github.com/UBC-MDS/olympics_data_analysis/blob/main/src/assets/olympics_data_viz.png")
-            ])
+                ),style={'textalign': 'centre'})
     ]),
     html.Br(),
     dbc.Tabs([
