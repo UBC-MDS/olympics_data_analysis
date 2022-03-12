@@ -46,10 +46,10 @@ app.layout = dbc.Container([
               html.Div(style={'float': 'right'}, children=[
                 html.A(
                     html.Img(
-                        src=logo,
-                        style={'float': 'center', 'height': '55px', 'width': '55px', 'margin-top': '3px', 'margin-bottom': '5px', 'margin-right': '5px', 'padding': '2px'}
+                        src=app.get_asset_url("olympics_data_viz.png"),
+                        style={'float': 'center', 'height': '45px', 'width': '45px', 'margin-top': '3px', 'margin-bottom': '5px', 'margin-right': '5px', 'padding': '2px'}
                     ),
-                    href="https://vaex.io/")
+                    href="https://github.com/UBC-MDS/olympics_data_analysis/blob/main/src/assets/olympics_data_viz.png")
             ])
     ]),
     html.Br(),
