@@ -125,12 +125,22 @@ app.layout = dbc.Container([
         ),
         ], label="Analysis", style=tab_style),
         dbc.Tab([
-            dash_table.DataTable(
-                id='table',
-                columns=[{"name": col, "id": col} for col in data.columns], 
-                data=data.to_dict('records'),
-                page_size=10,
-                filter_action='native'),
+            dbc.Row([
+                html.P("Year", style={"textAlign": "center"}),
+                dcc.Dropdown(
+                    id="year_df_dropdown",
+                    options=[{'label': i, 'value': i} for i in dropdown_list],
+                    value=[2016]
+                )
+            ]),
+            html.Br(),
+            dbc.Row([
+                dash_table.DataTable(
+                    id='table',
+                    columns=[{"name": col, "id": col} for col in agg_df.columns], 
+                    data=agg_df.to_dict('records'),
+                    page_size=10)
+            ]),
             dbc.Row([
                 html.P("Team Statistics", style={'textAlign': 'center'}),
                     dcc.Dropdown(
@@ -143,15 +153,20 @@ app.layout = dbc.Container([
         ], label="Data", style=tab_style),
         dbc.Tab(content, label='About the project', style=tab_style)
     ]),
-], style=tabs_styles)    
+], style=tabs_styles)  
+
+
+
 
 @app.callback(
     Output('table', 'data'),
     Output('table', 'columns'),
-    Input('df_dropdown', 'value'))
-def filter_table(cols):
+    Input('df_dropdown', 'value'),
+    Input('year_df_dropdown', 'value'))
+def filter_table(cols, year):
+    filtered_df = agg_df[agg_df["Year"] == year]
     columns=[{"name": col, "id": col} for col in cols]
-    df=agg_df[cols].to_dict('records')
+    df=filtered_df[cols].to_dict('records')
     return df, columns
 
 @app.callback(
@@ -402,6 +417,7 @@ def create_age_plot(year=None, sport=None, sex=None):
                     )
             ).properties(height=320, width=350).configure_axis(grid=False)
     return hist.configure_view(strokeWidth=0).to_html()
+
 
 if __name__ == '__main__':
     app.run_server(debug=True, port=8000)
