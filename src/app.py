@@ -7,6 +7,15 @@ from dash import Dash, html, dcc, Input, Output, dash_table
 import dash_bootstrap_components as dbc
 
 data = pd.read_csv("data/processed/athlete_events_2000.csv")
+filter_df = data[["Team", "Medal", "Year"]]
+total_medals = filter_df.groupby(["Team", "Year"]).count().reset_index().rename(columns={"Medal": "Total Medals Received"})
+physical_df = data[["Team", "Age", "Height", "Weight", "Year"]]
+physical_df = physical_df.groupby(["Team", "Year"]).mean().rename(columns={
+    "Age": "Average Age",
+    "Height": "Average Height",
+    "Weight": "Average Weight"}).reset_index()
+agg_df = physical_df["Year"].astype(str)
+agg_df = pd.merge(physical_df, total_medals, on=["Team", "Year"]).sort_values(by=["Total Medals Received"], ascending=False)
 logo = "olympics_data_viz.png"
 
 # Setup app layout
@@ -116,19 +125,17 @@ app.layout = dbc.Container([
         ),
         ], label="Analysis", style=tab_style),
         dbc.Tab([
+            dash_table.DataTable(
+                id='table',
+                columns=[{"name": col, "id": col} for col in data.columns], 
+                data=data.to_dict('records'),
+                page_size=10,
+                filter_action='native'),
             dbc.Row([
-                dash_table.DataTable(
-                    id='table',
-                    columns=[{"name": col, "id": col} for col in data.columns], 
-                    data=data.to_dict('records'),
-                    page_size=10,
-                    sort_action='native')
-            ]),
-            dbc.Row([
-                html.P("Year", style={'textAlign': 'center'}),
+                html.P("Team Statistics", style={'textAlign': 'center'}),
                     dcc.Dropdown(
                         id="df_dropdown",
-                        options=[{'label': col, 'value': col} for col in data.columns],
+                        options=[{'label': col, 'value': col} for col in agg_df.columns],
                         multi=True,
                         value=["Team"]
                     )
@@ -144,7 +151,7 @@ app.layout = dbc.Container([
     Input('df_dropdown', 'value'))
 def filter_table(cols):
     columns=[{"name": col, "id": col} for col in cols]
-    df=data[cols].to_dict('records')
+    df=agg_df[cols].to_dict('records')
     return df, columns
 
 @app.callback(
