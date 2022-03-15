@@ -3,7 +3,7 @@ import pandas as pd
 import numpy as np
 import altair as alt
 from vega_datasets import data as v_data
-from dash import Dash, html, dcc, Input, Output
+from dash import Dash, html, dcc, Input, Output, dash_table
 import dash_bootstrap_components as dbc
 
 data = pd.read_csv("data/processed/athlete_events_2000.csv")
@@ -115,10 +115,37 @@ app.layout = dbc.Container([
             color="primary",
         ),
         ], label="Analysis", style=tab_style),
+        dbc.Tab([
+            dbc.Row([
+                dash_table.DataTable(
+                    id='table',
+                    columns=[{"name": col, "id": col} for col in data.columns], 
+                    data=data.to_dict('records'),
+                    page_size=10,
+                    sort_action='native')
+            ]),
+            dbc.Row([
+                html.P("Year", style={'textAlign': 'center'}),
+                    dcc.Dropdown(
+                        id="df_dropdown",
+                        options=[{'label': col, 'value': col} for col in data.columns],
+                        multi=True,
+                        value=["Team"]
+                    )
+            ])
+        ], label="Data", style=tab_style),
         dbc.Tab(content, label='About the project', style=tab_style)
     ]),
 ], style=tabs_styles)    
 
+@app.callback(
+    Output('table', 'data'),
+    Output('table', 'columns'),
+    Input('df_dropdown', 'value'))
+def filter_table(cols):
+    columns=[{"name": col, "id": col} for col in cols]
+    df=data[cols].to_dict('records')
+    return df, columns
 
 @app.callback(
     Output("world_map", "srcDoc"),
