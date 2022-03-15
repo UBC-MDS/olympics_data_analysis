@@ -3,10 +3,20 @@ import pandas as pd
 import numpy as np
 import altair as alt
 from vega_datasets import data as v_data
-from dash import Dash, html, dcc, Input, Output
+from dash import Dash, html, dcc, Input, Output, dash_table
 import dash_bootstrap_components as dbc
 
 data = pd.read_csv("data/processed/athlete_events_2000.csv")
+filter_df = data[["Team", "Medal", "Year"]]
+total_medals = filter_df.groupby(["Team", "Year"]).count().reset_index().rename(columns={"Medal": "Total Medals Received"})
+physical_df = data[["Team", "Age", "Height", "Weight", "Year"]]
+df_cols = ["Team", "Age", "Height", "Weight"]
+physical_df = physical_df.groupby(["Team", "Year"]).mean().round(1).rename(columns={
+    "Age": "Average Age",
+    "Height": "Average Height",
+    "Weight": "Average Weight"}).reset_index()
+agg_df = physical_df["Year"].astype(str)
+agg_df = pd.merge(physical_df, total_medals, on=["Team", "Year"]).sort_values(by=["Total Medals Received"], ascending=False)
 logo = "olympics_data_viz.png"
 
 # Setup app layout
@@ -74,35 +84,47 @@ app.layout = dbc.Container([
             ]),
             html.Br(),
             dbc.Row([
-                dbc.Col(
-                html.Iframe(
-                    id='world_map',
-                    #srcDoc = create_world_plot(data, year=2000, sport="Ice Hockey", sex="Female"),
-                    style={'border-width': '0', 'width': '100%', 'height': '750px'})
-                )
+                dbc.Col([
+                    dbc.Card([
+                        dbc.CardHeader("Number of Medals Received By Each Country"),
+                        dbc.CardBody(
+                            html.Iframe(
+                                id='world_map',
+                                #srcDoc = create_world_plot(data, year=2000, sport="Ice Hockey", sex="Female"),
+                                style={'border-width': '0', 'width': '100%', 'height': '750px'})
+                        )
+                    ])
+                    ])
             ]),
             html.Br(),
             dbc.Row([
                 dbc.Col([
-                    html.Iframe(
-                        id="gender_medals",
-                        #srcDoc = create_gender_medal_plot(data, year=2000, sport="Ice Hockey", sex="Female"),
-                        style={
-                            "width": "100%",
-                            "height": "400px"
-                        }
-                    )
+                    dbc.Card([
+                        dbc.CardHeader("Number and Type of Medals Received By Each Sex"),
+                        dbc.CardBody(
+                            html.Iframe(
+                                id="gender_medals",                                #srcDoc = create_gender_medal_plot(data, year=2000, sport="Ice Hockey", sex="Female"),
+                                style={
+                                    "width": "100%",
+                                    "height": "400px"
+                                }
+                            )
+                        )
+                    ])
                 ]),
-
                 dbc.Col([
-                    html.Iframe(
-                        id="age_plot",
-                        #srcDoc = create_age_plot(data, year=2000, sport="Ice Hockey", sex="Female"),
-                        style={
-                            "width": "100%",
-                            "height": "400px"
-                        }
-                    )
+                    dbc.Card([
+                        dbc.CardHeader("Number and Type of Medals Distributed By Age"),
+                        dbc.CardBody(
+                            html.Iframe(
+                                id="age_plot",                              #srcDoc = create_age_plot(data, year=2000, sport="Ice Hockey", sex="Female"),
+                                style={
+                                    "width": "100%",
+                                    "height": "400px"
+                                }
+                            )
+                        )
+                    ])       
                 ], style={'border-style': None})
             ]),
             html.Br(),
@@ -115,10 +137,54 @@ app.layout = dbc.Container([
             color="primary",
         ),
         ], label="Analysis", style=tab_style),
+        dbc.Tab([
+            dbc.Row([
+                html.P("Select a Year", style={"textAlign": "center"}),
+                dcc.Dropdown(
+                    id="year_df_dropdown",
+                    options=[{'label': i, 'value': i} for i in dropdown_list],
+                    value=2016
+                )
+            ]),
+            html.Br(),
+            dbc.Row([
+                dash_table.DataTable(
+                    id='table',
+                    columns=[{"name": col, "id": col} for col in df_cols], 
+                    data=agg_df.to_dict('records'),
+                    page_size=10,
+                    style_cell={'padding': '5px'},
+                    style_data_conditional=[{
+                        'if': {'row_index': 'odd'},
+                        'backgroundColor': 'rgb(174, 226, 235)'}],
+                     style_header={
+                        'backgroundColor': 'rgb(116, 180, 219)',
+                        'fontWeight': 'bold'})
+            ]),
+            dbc.Row([
+                html.P("Select an Olympic Statistic", style={'textAlign': 'center'}),
+                    dcc.Dropdown(
+                        id="df_dropdown",
+                        options=[{'label': col, 'value': col} for col in agg_df.columns],
+                        multi=True,
+                        value=["Team"]
+                    )
+            ])
+        ], label="Data", style=tab_style),
         dbc.Tab(content, label='About the project', style=tab_style)
     ]),
-], style=tabs_styles)    
+], style=tabs_styles)  
 
+@app.callback(
+    Output('table', 'data'),
+    Output('table', 'columns'),
+    Input('df_dropdown', 'value'),
+    Input('year_df_dropdown', 'value'))
+def filter_table(cols, year):
+    filtered_df = agg_df[agg_df["Year"] == year]
+    columns=[{"name": col, "id": col} for col in cols]
+    df=filtered_df[cols].to_dict('records')
+    return df, columns
 
 @app.callback(
     Output("world_map", "srcDoc"),
@@ -227,7 +293,7 @@ def create_world_plot(year=None, sport=None, sex=None):
     else:
         country_noc_medals_ids = country_noc_medals_ids.groupby(['id', 'Sex', 'Sport', 'Year', 'country'])['medals'].agg('sum').reset_index()
     
-    world_final_map = (alt.Chart(world_map, title="Number of medals received by country").mark_geoshape().transform_lookup(
+    world_final_map = (alt.Chart(world_map).mark_geoshape().transform_lookup(
         lookup='id',
         from_=alt.LookupData(country_noc_medals_ids, 'id', ['country', 'medals']))
      .encode(tooltip=['country:O', 'medals:Q'], 
@@ -363,11 +429,12 @@ def create_age_plot(year=None, sport=None, sex=None):
                     as_=['Age', 'density'])  
                 .mark_area(interpolate='monotone', opacity=0.4).encode(
                     x=alt.X('Age', title="Age (Years)", axis=alt.Axis(grid=False)),
-                    y=alt.Y('density:Q', title="Density", axis=alt.Axis(grid=False)),
+                    y=alt.Y('density:Q', title="Number of Medals Received", axis=alt.Axis(grid=False)),
                     color=alt.Color('Medal:O', scale=alt.Scale(scheme='darkblue')),
                     )
             ).properties(height=320, width=350).configure_axis(grid=False)
     return hist.configure_view(strokeWidth=0).to_html()
+
 
 if __name__ == '__main__':
     app.run_server(debug=True, port=8000)
