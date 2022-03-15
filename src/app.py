@@ -10,7 +10,8 @@ data = pd.read_csv("data/processed/athlete_events_2000.csv")
 filter_df = data[["Team", "Medal", "Year"]]
 total_medals = filter_df.groupby(["Team", "Year"]).count().reset_index().rename(columns={"Medal": "Total Medals Received"})
 physical_df = data[["Team", "Age", "Height", "Weight", "Year"]]
-physical_df = physical_df.groupby(["Team", "Year"]).mean().rename(columns={
+df_cols = ["Team", "Age", "Height", "Weight"]
+physical_df = physical_df.groupby(["Team", "Year"]).mean().round(1).rename(columns={
     "Age": "Average Age",
     "Height": "Average Height",
     "Weight": "Average Weight"}).reset_index()
@@ -130,14 +131,14 @@ app.layout = dbc.Container([
                 dcc.Dropdown(
                     id="year_df_dropdown",
                     options=[{'label': i, 'value': i} for i in dropdown_list],
-                    value=[2016]
+                    value=2016
                 )
             ]),
             html.Br(),
             dbc.Row([
                 dash_table.DataTable(
                     id='table',
-                    columns=[{"name": col, "id": col} for col in agg_df.columns], 
+                    columns=[{"name": col, "id": col} for col in df_cols], 
                     data=agg_df.to_dict('records'),
                     page_size=10)
             ]),
