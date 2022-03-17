@@ -402,7 +402,7 @@ def create_world_plot(year=None, sport=None, sex=None, country=None):
     >>> create_world_plot(year=2014, sport="Ice Hockey", sex="Male", country="Canada")
     >>> create_world_plot(year=2014)
     """
-    data = pd.read_csv("/Users/sanchitsingh/Documents/Block_5/532/olympics_data_analysis/data/processed/athlete_events_2000.csv")
+    data = pd.read_csv("data/processed/athlete_events_2000.csv")
     if not isinstance(year, int) and year is not None:
         raise TypeError("year should be of type 'int'")
     if not isinstance(sport, str) and sport is not None:
@@ -429,9 +429,9 @@ def create_world_plot(year=None, sport=None, sex=None, country=None):
         .rename(columns={"Medal": "medals"})
     )
 
-    country_ids = pd.read_csv("/Users/sanchitsingh/Documents/Block_5/532/olympics_data_analysis/data/processed/country-ids.csv")
+    country_ids = pd.read_csv("data/processed/country-ids.csv")
 
-    noc = pd.read_csv("/Users/sanchitsingh/Documents/Block_5/532/olympics_data_analysis/data/processed/noc_regions.csv")
+    noc = pd.read_csv("data/processed/noc_regions.csv")
     noc = noc[["NOC", "region"]]
 
     noc["region"][noc["region"] == "USA"] = "United States"
