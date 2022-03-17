@@ -39,7 +39,7 @@ agg_df["Ranking"] = np.arange(1, len(agg_df) + 1)
 logo = "olympics_data_viz.png"
 
 # Setup app layout
-app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
+app = Dash(__name__, external_stylesheets=[dbc.themes.MINTY])
 app.title = "Analyzing the Olympics Over the Years"
 server = app.server
 
