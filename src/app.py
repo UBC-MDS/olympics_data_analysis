@@ -377,7 +377,7 @@ def filter_table(cols, year):
     Input("sex_dropdown", "value"),
 )
 # World map
-def create_world_plot(year=None, sport=None, sex=None):
+def create_world_plot(year=None, sport=None, sex=None, country=None):
     """
     Filters for selected features and creates the 'country' vs 'medals won' plot.
     Parameters
@@ -390,6 +390,8 @@ def create_world_plot(year=None, sport=None, sex=None):
         the sport to filter the data by
     sex: str
         the biological sex to filter the data by
+    country: str
+        the country to filter the data by
 
     Returns
     -------
@@ -397,7 +399,7 @@ def create_world_plot(year=None, sport=None, sex=None):
         the plot showing the medals received distributed by country, filtered for the selected features
     Examples
     --------
-    >>> create_world_plot(year=2014, sport="Ice Hockey", sex="Male")
+    >>> create_world_plot(year=2014, sport="Ice Hockey", sex="Male", country="Canada")
     >>> create_world_plot(year=2014)
     """
     data = pd.read_csv("data/processed/athlete_events_2000.csv")
@@ -407,6 +409,8 @@ def create_world_plot(year=None, sport=None, sex=None):
         raise TypeError("sport should be of type 'str'")
     if not isinstance(sex, str) and sex is not None:
         raise TypeError("sex should be of type 'str'")
+    if not isinstance(country, str) and country is not None:
+        raise TypeError("country should be of type 'str'")
 
     if year is not None:
         data = data[data["Year"] == year]
@@ -414,6 +418,8 @@ def create_world_plot(year=None, sport=None, sex=None):
         data = data[data["Sport"] == sport]
     if sex is not None:
         data = data[data["Sex"] == sex]
+    if country is not None:
+        data = data[data["country"] == sex]
 
     data_2 = (
         data[["NOC", "Medal", "Year", "Sport", "Sex"]]
@@ -432,14 +438,11 @@ def create_world_plot(year=None, sport=None, sex=None):
     noc["region"][noc["region"] == "Boliva"] = "Bolivia, Plurinational State of"
     noc["region"][noc["region"] == "Brunei"] = "Brunei Darussalam"
     noc["region"][noc["region"] == "Republic of Congo"] = "Congo"
-    noc["region"][
-        noc["region"] == "Democratic Republic of the Congo"
-    ] = "Congo, the Democratic Republic of the"
+    noc["region"][noc["region"] == "Democratic Republic of the Congo"] = "Congo, the Democratic Republic of the"
     noc["region"][noc["region"] == "Ivory Coast"] = """Cote d'Ivoire"""
     noc["region"][noc["region"] == "Iran"] = "Iran, Islamic Republic of"
     noc["region"][
-        noc["region"] == "North Korea"
-    ] = """Korea, Democratic People's Republic of"""
+    noc["region"] == "North Korea"] = """Korea, Democratic People's Republic of"""
     noc["region"][noc["region"] == "South Korea"] = "Korea, Republic of"
     noc["region"][noc["region"] == "Moldova"] = "Moldova, Republic of"
     noc["region"][noc["region"] == "Palestine"] = "Palestinian Territory, Occupied"
@@ -468,13 +471,13 @@ def create_world_plot(year=None, sport=None, sex=None):
     map_click = alt.selection_multi()
     world_map = alt.topo_feature(v_data.world_110m.url, "countries")
 
-    if (year is None) & (sex is None) & (sport is None):
+    if (year is None) & (sex is None) & (sport is None) & (country is None):
         country_noc_medals_ids = (
             country_noc_medals_ids.groupby(["id", "country"])["medals"]
             .agg("sum")
             .reset_index()
         )
-    elif (year is None) & (sex is None) & (sport is not None):
+    elif (year is None) & (sex is None) & (sport is not None) & (country is None):
         country_noc_medals_ids = (
             country_noc_medals_ids.groupby(["id", "Sport" "country"])["medals"]
             .agg("sum")
@@ -483,7 +486,37 @@ def create_world_plot(year=None, sport=None, sex=None):
         country_noc_medals_ids = country_noc_medals_ids[
             (country_noc_medals_ids.Sport == sport)
         ]
-    elif (year is None) & (sex is not None) & (sport is not None):
+    elif (year is not None) & (sex is None) & (sport is None) & (country is None):
+        country_noc_medals_ids = (
+            country_noc_medals_ids.groupby(["id", "Year", "country"])["medals"]
+            .agg("sum")
+            .reset_index()
+        )
+        country_noc_medals_ids = country_noc_medals_ids[
+            (country_noc_medals_ids.Year == year)
+        ]
+    elif (year is None) & (sex is not None) & (sport is None) & (country is None):
+        country_noc_medals_ids = (
+            country_noc_medals_ids.groupby(["id", "Sex", "country"])["medals"]
+            .agg("sum")
+            .reset_index()
+        )
+        country_noc_medals_ids = country_noc_medals_ids[
+            (country_noc_medals_ids.Sex == sex)
+        ]
+    elif (year is None) & (sex is None) & (sport is None) & (country is not None):
+        country_noc_medals_ids = (
+            country_noc_medals_ids.groupby(["id", "country"])["medals"]
+            .agg("sum")
+            .reset_index()
+        )
+        country_noc_medals_ids = country_noc_medals_ids[
+            (country_noc_medals_ids.country == country)
+        ]
+
+
+
+    elif (year is None) & (sex is not None) & (sport is not None) & (country is None):
         country_noc_medals_ids = (
             country_noc_medals_ids.groupby(["id", "Sport", "Sex", "country"])["medals"]
             .agg("sum")
@@ -493,7 +526,7 @@ def create_world_plot(year=None, sport=None, sex=None):
             (country_noc_medals_ids.Sport == sport)
             & (country_noc_medals_ids.Sex == sex)
         ]
-    elif (year is not None) & (sex is None) & (sport is not None):
+    elif (year is not None) & (sex is None) & (sport is not None) & (country is None):
         country_noc_medals_ids = (
             country_noc_medals_ids.groupby(["id", "Sport", "Year", "country"])["medals"]
             .agg("sum")
@@ -503,7 +536,7 @@ def create_world_plot(year=None, sport=None, sex=None):
             (country_noc_medals_ids.Sport == sport)
             & (country_noc_medals_ids.Year == year)
         ]
-    elif (year is not None) & (sex is not None) & (sport is None):
+    elif (year is not None) & (sex is not None) & (sport is None) & (country is None):
         country_noc_medals_ids = (
             country_noc_medals_ids.groupby(["id", "Sex", "Year", "country"])["medals"]
             .agg("sum")
@@ -512,24 +545,72 @@ def create_world_plot(year=None, sport=None, sex=None):
         country_noc_medals_ids = country_noc_medals_ids[
             (country_noc_medals_ids.Sex == sex) & (country_noc_medals_ids.Year == year)
         ]
-    elif (year is not None) & (sex is None) & (sport is None):
+    elif (year is not None) & (sex is None) & (sport is None) & (country is not None):
         country_noc_medals_ids = (
             country_noc_medals_ids.groupby(["id", "Year", "country"])["medals"]
             .agg("sum")
             .reset_index()
         )
         country_noc_medals_ids = country_noc_medals_ids[
-            (country_noc_medals_ids.Year == year)
+            (country_noc_medals_ids.country == country) & (country_noc_medals_ids.Year == year)
         ]
-    elif (year is None) & (sex is not None) & (sport is None):
+    elif (year is None) & (sex is not None) & (sport is None) & (country is not None):
         country_noc_medals_ids = (
             country_noc_medals_ids.groupby(["id", "Sex", "country"])["medals"]
             .agg("sum")
             .reset_index()
         )
         country_noc_medals_ids = country_noc_medals_ids[
-            (country_noc_medals_ids.Sex == sex)
+            (country_noc_medals_ids.Sex == sex) & (country_noc_medals_ids.country == country)
         ]
+    elif (year is None) & (sex is None) & (sport is not None) & (country is not None):
+        country_noc_medals_ids = (
+            country_noc_medals_ids.groupby(["id", "Sport", "country"])["medals"]
+            .agg("sum")
+            .reset_index()
+        )
+        country_noc_medals_ids = country_noc_medals_ids[
+            (country_noc_medals_ids.Sport == sport) & (country_noc_medals_ids.country == country)
+        ]
+
+
+    elif (year is None) & (sex is not None) & (sport is not None) & (country is not None):
+        country_noc_medals_ids = (
+            country_noc_medals_ids.groupby(["id", "Sex", "Sport", "country"])["medals"]
+            .agg("sum")
+            .reset_index()
+        )
+        country_noc_medals_ids = country_noc_medals_ids[
+            (country_noc_medals_ids.Sport == sport) & (country_noc_medals_ids.country == country) & (country_noc_medals_ids.Sex == sex)
+        ]
+    elif (year is not None) & (sex is None) & (sport is not None) & (country is not None):
+        country_noc_medals_ids = (
+            country_noc_medals_ids.groupby(["id", "Year", "Sport", "country"])["medals"]
+            .agg("sum")
+            .reset_index()
+        )
+        country_noc_medals_ids = country_noc_medals_ids[
+            (country_noc_medals_ids.Sport == sport) & (country_noc_medals_ids.country == country) & (country_noc_medals_ids.Year == year)
+        ]
+    elif (year is not None) & (sex is not None) & (sport is None) & (country is not None):
+        country_noc_medals_ids = (
+            country_noc_medals_ids.groupby(["id", "Year", "Sex", "country"])["medals"]
+            .agg("sum")
+            .reset_index()
+        )
+        country_noc_medals_ids = country_noc_medals_ids[
+            (country_noc_medals_ids.Sex == sex) & (country_noc_medals_ids.country == country) & (country_noc_medals_ids.Year == year)
+        ]
+    elif (year is not None) & (sex is not None) & (sport is not None) & (country is None):
+        country_noc_medals_ids = (
+            country_noc_medals_ids.groupby(["id", "Sport", "Sex", "Year", "country"])["medals"]
+            .agg("sum")
+            .reset_index()
+        )
+        country_noc_medals_ids = country_noc_medals_ids[
+            (country_noc_medals_ids.Sport == sport) & (country_noc_medals_ids.Sex == sex) & (country_noc_medals_ids.Year == year)
+        ]
+
     else:
         country_noc_medals_ids = (
             country_noc_medals_ids.groupby(["id", "Sex", "Sport", "Year", "country"])[
@@ -565,6 +646,7 @@ def create_world_plot(year=None, sport=None, sex=None):
     map_display = background + world_final_map
 
     return map_display.configure_view(strokeWidth=0).to_html()
+
 
 
 @app.callback(
