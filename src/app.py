@@ -39,23 +39,30 @@ agg_df["Ranking"] = np.arange(1, len(agg_df) + 1)
 logo = "olympics_data_viz.png"
 
 # Setup app layout
-app = Dash(__name__, external_stylesheets=[dbc.themes.BOOTSTRAP])
+app = Dash(__name__, external_stylesheets=[dbc.themes.MINTY])
 app.title = "Analyzing the Olympics Over the Years"
 server = app.server
 
 dropdown_list = sorted(list(data["Year"].unique()), reverse=True)
 season = data["Season"].unique()[0]
-
+background_style = {
+    "backgroundColor": "#f7f2dc",
+    "height": "100%",
+    "display": "fixed",
+    "width": "100%",
+}
 tabs_styles = {"height": "60px", "width": "100%", "backgroundColor": "#1C4E80"}
 tab_style = {
-    "borderBottom": "1px solid #d6d6d6",
+    "borderTop": "1px solid #000000",
     "padding": "2px",
     "fontWeight": "bold",
     "marginLeft": "auto",
 }
 
+
 tab_selected_style = {
-    "borderTop": "1px solid #d6d6d6",
+    "borderTop": "1px solid #000000",
+    "backgroundColor": "#1C4E80",
     "color": "white",
     "padding": "10px",
     "float": "left",
@@ -71,13 +78,19 @@ app.layout = dbc.Container(
                 dbc.Col(
                     html.Div(
                         style=tab_selected_style,
-                        children=[html.H3("Analyzing the Olympics Over The Years")],
+                        children=[
+                            html.H3(
+                                "Analyzing the Olympics Over The Years",
+                                style={"color": "white"},
+                            )
+                        ],
                     ),
                     style={"textalign": "centre"},
-                )
-            ]
+                ),
+                html.Br(),
+            ],
+            style={"backgroundColor": "#1C4E80"},
         ),
-        html.Br(),
         dbc.Tabs(
             [
                 dbc.Tab(
@@ -87,7 +100,13 @@ app.layout = dbc.Container(
                             [
                                 dbc.Col(
                                     [
-                                        html.P("Year", style={"textAlign": "center"}),
+                                        html.P(
+                                            "Year",
+                                            style={
+                                                "textAlign": "center",
+                                                "color": "#000000",
+                                            },
+                                        ),
                                         dcc.Dropdown(
                                             id="year_dropdown",
                                             options=[
@@ -100,7 +119,13 @@ app.layout = dbc.Container(
                                 ),
                                 dbc.Col(
                                     [
-                                        html.P("Gender", style={"textAlign": "center"}),
+                                        html.P(
+                                            "Gender",
+                                            style={
+                                                "textAlign": "center",
+                                                "color": "#000000",
+                                            },
+                                        ),
                                         dcc.Dropdown(
                                             id="sex_dropdown",
                                             options=data.Sex.unique().tolist(),
@@ -109,7 +134,13 @@ app.layout = dbc.Container(
                                 ),
                                 dbc.Col(
                                     [
-                                        html.P("Sport", style={"textAlign": "center"}),
+                                        html.P(
+                                            "Sport",
+                                            style={
+                                                "textAlign": "center",
+                                                "color": "#000000",
+                                            },
+                                        ),
                                         dcc.Dropdown(
                                             id="sport_dropdown",
                                             options=data.Sport.unique().tolist(),
@@ -126,7 +157,8 @@ app.layout = dbc.Container(
                                         dbc.Card(
                                             [
                                                 dbc.CardHeader(
-                                                    "Number of Medals Received By Each Country"
+                                                    "Number of Medals Received By Each Country",
+                                                    style={"color": "#000000"},
                                                 ),
                                                 dbc.CardBody(
                                                     html.Iframe(
@@ -153,7 +185,8 @@ app.layout = dbc.Container(
                                         dbc.Card(
                                             [
                                                 dbc.CardHeader(
-                                                    "Number and Type of Medals Received By Each Sex"
+                                                    "Number and Type of Medals Received By Each Sex",
+                                                    style={"color": "#000000"},
                                                 ),
                                                 dbc.CardBody(
                                                     html.Iframe(
@@ -173,7 +206,8 @@ app.layout = dbc.Container(
                                         dbc.Card(
                                             [
                                                 dbc.CardHeader(
-                                                    "Number and Type of Medals Distributed By Age"
+                                                    "Number and Type of Medals Distributed By Age",
+                                                    style={"color": "#000000"},
                                                 ),
                                                 dbc.CardBody(
                                                     html.Iframe(
@@ -286,7 +320,10 @@ app.layout = dbc.Container(
                                             ],
                                             data=agg_df.to_dict("records"),
                                             page_size=15,
-                                            style_cell={"padding": "5px"},
+                                            style_cell={
+                                                "padding": "5px",
+                                                "color": "#010c17",
+                                            },
                                             style_data_conditional=[
                                                 {
                                                     "if": {"row_index": "odd"},
@@ -296,6 +333,7 @@ app.layout = dbc.Container(
                                             style_header={
                                                 "backgroundColor": "rgb(116, 180, 219)",
                                                 "fontWeight": "bold",
+                                                "color": "#010c17",
                                             },
                                         ),
                                     ]
@@ -306,11 +344,15 @@ app.layout = dbc.Container(
                     label="Data",
                     style=tab_style,
                 ),
-                dbc.Tab(content, label="About the project", style=tab_style),
-            ]
+                dbc.Tab(
+                    content,
+                    label="About the project",
+                    style=tab_style,
+                ),
+            ],
         ),
     ],
-    style=tabs_styles,
+    style=background_style,
 )
 
 
