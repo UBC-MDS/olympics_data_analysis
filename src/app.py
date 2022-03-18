@@ -36,6 +36,57 @@ agg_df = pd.merge(physical_df, total_medals, on=["Team", "Year"]).sort_values(
     by=["Total Medals Received"], ascending=False
 )
 agg_df["Ranking"] = np.arange(1, len(agg_df) + 1)
+
+# Data wrangling for country dropdown
+data_2 = (
+        data[["NOC", "Medal", "Year", "Sport", "Sex"]]
+        .groupby(["NOC", "Year", "Sport", "Sex"])
+        .agg("count")
+        .reset_index()
+        .rename(columns={"Medal": "medals"})
+    )
+
+country_ids = pd.read_csv("data/processed/country-ids.csv")
+
+noc = pd.read_csv("data/processed/noc_regions.csv")
+noc = noc[["NOC", "region"]]
+
+noc["region"][noc["region"] == "USA"] = "United States"
+noc["region"][noc["region"] == "Boliva"] = "Bolivia, Plurinational State of"
+noc["region"][noc["region"] == "Brunei"] = "Brunei Darussalam"
+noc["region"][noc["region"] == "Republic of Congo"] = "Congo"
+noc["region"][noc["region"] == "Democratic Republic of the Congo"] = "Congo, the Democratic Republic of the"
+noc["region"][noc["region"] == "Ivory Coast"] = """Cote d'Ivoire"""
+noc["region"][noc["region"] == "Iran"] = "Iran, Islamic Republic of"
+noc["region"][
+noc["region"] == "North Korea"] = """Korea, Democratic People's Republic of"""
+noc["region"][noc["region"] == "South Korea"] = "Korea, Republic of"
+noc["region"][noc["region"] == "Moldova"] = "Moldova, Republic of"
+noc["region"][noc["region"] == "Palestine"] = "Palestinian Territory, Occupied"
+noc["region"][noc["region"] == "Russia"] = "Russian Federation"
+noc["region"][noc["region"] == "Syria"] = "Syrian Arab Republic"
+noc["region"][noc["region"] == "Taiwan"] = "Taiwan, Province of China"
+noc["region"][noc["region"] == "Tanzania"] = "Tanzania, United Republic of"
+noc["region"][noc["region"] == "Trinidad"] = "Trinidad and Tobago"
+noc["region"][noc["region"] == "UK"] = "United Kingdom"
+noc["region"][noc["region"] == "Venezuela"] = "Venezuela, Bolivarian Republic of"
+noc["region"][noc["region"] == "Vietnam"] = "Viet Nam"
+
+country_noc_ids = noc.merge(
+    country_ids, how="inner", left_on="region", right_on="name"
+)
+country_noc_ids = country_noc_ids[country_noc_ids["NOC"] != "NFL"]
+country_noc_ids = country_noc_ids[["id", "name", "NOC"]].rename(
+    columns={"name": "country"}
+)
+
+country_noc_medals_ids = country_noc_ids.merge(data_2, how="left", on="NOC")
+country_noc_medals_ids = country_noc_medals_ids[
+    ["id", "country", "NOC", "medals", "Year", "Sport", "Sex"]
+]
+
+country_dropdown_list = list(country_noc_medals_ids['country'].unique())
+
 logo = "olympics_data_viz.png"
 
 # Setup app layout
@@ -147,6 +198,21 @@ app.layout = dbc.Container(
                                         ),
                                     ]
                                 ),
+                                dbc.Col(
+                                    [
+                                        html.P(
+                                            "Country",
+                                            style={
+                                                "textAlign": "center",
+                                                "color": "#000000",
+                                            },
+                                        ),
+                                        dcc.Dropdown(
+                                            id="country_dropdown",
+                                            options=country_dropdown_list
+                                        ),
+                                    ]
+                                )
                             ]
                         ),
                         html.Br(),
@@ -419,54 +485,7 @@ def create_world_plot(year=None, sport=None, sex=None, country=None):
     if sex is not None:
         data = data[data["Sex"] == sex]
     if country is not None:
-        data = data[data["country"] == sex]
-
-    data_2 = (
-        data[["NOC", "Medal", "Year", "Sport", "Sex"]]
-        .groupby(["NOC", "Year", "Sport", "Sex"])
-        .agg("count")
-        .reset_index()
-        .rename(columns={"Medal": "medals"})
-    )
-
-    country_ids = pd.read_csv("data/processed/country-ids.csv")
-
-    noc = pd.read_csv("data/processed/noc_regions.csv")
-    noc = noc[["NOC", "region"]]
-
-    noc["region"][noc["region"] == "USA"] = "United States"
-    noc["region"][noc["region"] == "Boliva"] = "Bolivia, Plurinational State of"
-    noc["region"][noc["region"] == "Brunei"] = "Brunei Darussalam"
-    noc["region"][noc["region"] == "Republic of Congo"] = "Congo"
-    noc["region"][noc["region"] == "Democratic Republic of the Congo"] = "Congo, the Democratic Republic of the"
-    noc["region"][noc["region"] == "Ivory Coast"] = """Cote d'Ivoire"""
-    noc["region"][noc["region"] == "Iran"] = "Iran, Islamic Republic of"
-    noc["region"][
-    noc["region"] == "North Korea"] = """Korea, Democratic People's Republic of"""
-    noc["region"][noc["region"] == "South Korea"] = "Korea, Republic of"
-    noc["region"][noc["region"] == "Moldova"] = "Moldova, Republic of"
-    noc["region"][noc["region"] == "Palestine"] = "Palestinian Territory, Occupied"
-    noc["region"][noc["region"] == "Russia"] = "Russian Federation"
-    noc["region"][noc["region"] == "Syria"] = "Syrian Arab Republic"
-    noc["region"][noc["region"] == "Taiwan"] = "Taiwan, Province of China"
-    noc["region"][noc["region"] == "Tanzania"] = "Tanzania, United Republic of"
-    noc["region"][noc["region"] == "Trinidad"] = "Trinidad and Tobago"
-    noc["region"][noc["region"] == "UK"] = "United Kingdom"
-    noc["region"][noc["region"] == "Venezuela"] = "Venezuela, Bolivarian Republic of"
-    noc["region"][noc["region"] == "Vietnam"] = "Viet Nam"
-
-    country_noc_ids = noc.merge(
-        country_ids, how="inner", left_on="region", right_on="name"
-    )
-    country_noc_ids = country_noc_ids[country_noc_ids["NOC"] != "NFL"]
-    country_noc_ids = country_noc_ids[["id", "name", "NOC"]].rename(
-        columns={"name": "country"}
-    )
-
-    country_noc_medals_ids = country_noc_ids.merge(data_2, how="left", on="NOC")
-    country_noc_medals_ids = country_noc_medals_ids[
-        ["id", "country", "NOC", "medals", "Year", "Sport", "Sex"]
-    ]
+        data = data[data["country"] == country]
 
     map_click = alt.selection_multi()
     world_map = alt.topo_feature(v_data.world_110m.url, "countries")
