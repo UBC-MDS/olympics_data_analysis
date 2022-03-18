@@ -26,8 +26,8 @@ physical_df = (
     .rename(
         columns={
             "Age": "Average Age",
-            "Height": "Average Height",
-            "Weight": "Average Weight",
+            "Height": "Average Height (cm)",
+            "Weight": "Average Weight (kg)",
         }
     )
     .reset_index()
@@ -101,7 +101,7 @@ def toggle_collapse(n, is_open):
     return is_open
 
 
-content = "An interactive dashboard demonstrating statistics regarding the Summer and Winter Olympic Games from 2000 to 2016. This app provides a dashboard that summarizes a few of the key statistics that we have extracted from this data. Specifically, our dashboard aims to provide accessible visuals that demonstrate the differences in biological sex, geographic location, and physical characteristics of athletes and how these factors impact performance within the Olympic Games."
+content = "We developed this dashboard in the hopes of making Olympic Games statistics accessible to the public. Here, users can explore the statistics of Olympic Events from 2000 to 2016. We developed filters to extract data that we found summarized the most important Olympic statistics that users may want to know about. Specifically, our dashboard aims to provide digestible visuals that demonstrate the differences in biological sex, geographic location, and physical characteristics of athletes and how these factors impact performance within the Olympic Games. Our dashboard is a collaborative effort and we look forward to hearing your feedback and integrating any contributions that you wish to make!"
 app.layout = dbc.Container(
     [
         dbc.Row(
@@ -288,7 +288,7 @@ app.layout = dbc.Container(
                                         dbc.Card(
                                             [
                                                 dbc.CardHeader(
-                                                    "Density of Each Medal Type Distributed By Age",
+                                                    "Density of Each Medal Type Received Distributed By Age",
                                                     style={
                                                         "color": "#000000",
                                                         "textAlign": "center",
@@ -311,15 +311,48 @@ app.layout = dbc.Container(
                             ]
                         ),
                         html.Br(),
+                        dbc.Row(
+                            [
+                                html.Div(
+                                    [
+                                        html.P(
+                                            [
+                                                "What does ",
+                                                html.Span(
+                                                    "Density",
+                                                    id="tooltip-target",
+                                                    style={
+                                                        "textDecoration": "underline",
+                                                        "cursor": "pointer",
+                                                    },
+                                                ),
+                                                " mean?",
+                                            ]
+                                        ),
+                                        dbc.Tooltip(
+                                            "Density is just another way of showing a number. It has an arbitrary unit, but the higher the density, the higher the count. For the age density plot, a higher density means a higher number of medals received!",
+                                            target="tooltip-target",
+                                        ),
+                                    ]
+                                )
+                            ]
+                        ),
+                        html.Br(),
                         dbc.Alert(
                             [
-                                "Checkout the ",
+                                "For more information, visit our ",
                                 html.A(
                                     "GitHub repo",
-                                    href="https://github.com/UBC-MDS/olympics_data_analysis/tree/main",
+                                    href="https://github.com/UBC-MDS/olympics_data_analysis/",
                                     className="alert-link",
                                 ),
-                                " for the sourcecode.",
+                                " or check out the ",
+                                html.A(
+                                    "sourcecode",
+                                    href="https://github.com/UBC-MDS/olympics_data_analysis/blob/main/src/app.py",
+                                    className="alert-link",
+                                ),
+                                " to see how we developed this app",
                             ],
                             color="primary",
                         ),
@@ -436,7 +469,28 @@ app.layout = dbc.Container(
                     style=tab_style,
                 ),
                 dbc.Tab(
-                    content,
+                    [
+                        html.Br(),
+                        dbc.Row([html.Div(content)]),
+                        html.Br(),
+                        dbc.Row(
+                            [
+                                dbc.Alert(
+                                    [
+                                        "I want to ",
+                                        html.A(
+                                            "contribute",
+                                            href="https://github.com/UBC-MDS/olympics_data_analysis#contribute-to-the-cause",
+                                            className="alert-link",
+                                        ),
+                                        " to your project!",
+                                    ],
+                                    color="primary",
+                                ),
+                            ]
+                        ),
+                        html.Br(),
+                    ],
                     label="About the project",
                     style=tab_style,
                 ),
@@ -707,7 +761,7 @@ def create_gender_medal_plot(year=None, sport=None, sex=None):
             y=alt.Y(
                 "count(Medal):Q",
                 title=f"Olympic Medals won in {year}",
-                axis=alt.Axis(grid=False),
+                axis=alt.Axis(grid=False, title=None),
             ),
             color=alt.Color("Medal", scale=alt.Scale(scheme="greenblue")),
         )
