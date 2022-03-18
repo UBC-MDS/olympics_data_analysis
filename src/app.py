@@ -3,9 +3,10 @@ import pandas as pd
 import numpy as np
 import altair as alt
 from vega_datasets import data as v_data
-from dash import Dash, html, dcc, Input, Output, dash_table
+from dash import Dash, html, dcc, Input, Output, dash_table, State
 import dash_bootstrap_components as dbc
 
+alt.data_transformers.disable_max_rows()
 data = pd.read_csv("data/processed/athlete_events_2000.csv")
 filter_df = data[["NOC", "Medal", "Year"]]
 filter_df = filter_df.rename(columns={"NOC": "Team"})
@@ -36,57 +37,6 @@ agg_df = pd.merge(physical_df, total_medals, on=["Team", "Year"]).sort_values(
     by=["Total Medals Received"], ascending=False
 )
 agg_df["Ranking"] = np.arange(1, len(agg_df) + 1)
-
-# Data wrangling for country dropdown
-data_2 = (
-        data[["NOC", "Medal", "Year", "Sport", "Sex"]]
-        .groupby(["NOC", "Year", "Sport", "Sex"])
-        .agg("count")
-        .reset_index()
-        .rename(columns={"Medal": "medals"})
-    )
-
-country_ids = pd.read_csv("data/processed/country-ids.csv")
-
-noc = pd.read_csv("data/processed/noc_regions.csv")
-noc = noc[["NOC", "region"]]
-
-noc["region"][noc["region"] == "USA"] = "United States"
-noc["region"][noc["region"] == "Boliva"] = "Bolivia, Plurinational State of"
-noc["region"][noc["region"] == "Brunei"] = "Brunei Darussalam"
-noc["region"][noc["region"] == "Republic of Congo"] = "Congo"
-noc["region"][noc["region"] == "Democratic Republic of the Congo"] = "Congo, the Democratic Republic of the"
-noc["region"][noc["region"] == "Ivory Coast"] = """Cote d'Ivoire"""
-noc["region"][noc["region"] == "Iran"] = "Iran, Islamic Republic of"
-noc["region"][
-noc["region"] == "North Korea"] = """Korea, Democratic People's Republic of"""
-noc["region"][noc["region"] == "South Korea"] = "Korea, Republic of"
-noc["region"][noc["region"] == "Moldova"] = "Moldova, Republic of"
-noc["region"][noc["region"] == "Palestine"] = "Palestinian Territory, Occupied"
-noc["region"][noc["region"] == "Russia"] = "Russian Federation"
-noc["region"][noc["region"] == "Syria"] = "Syrian Arab Republic"
-noc["region"][noc["region"] == "Taiwan"] = "Taiwan, Province of China"
-noc["region"][noc["region"] == "Tanzania"] = "Tanzania, United Republic of"
-noc["region"][noc["region"] == "Trinidad"] = "Trinidad and Tobago"
-noc["region"][noc["region"] == "UK"] = "United Kingdom"
-noc["region"][noc["region"] == "Venezuela"] = "Venezuela, Bolivarian Republic of"
-noc["region"][noc["region"] == "Vietnam"] = "Viet Nam"
-
-country_noc_ids = noc.merge(
-    country_ids, how="inner", left_on="region", right_on="name"
-)
-country_noc_ids = country_noc_ids[country_noc_ids["NOC"] != "NFL"]
-country_noc_ids = country_noc_ids[["id", "name", "NOC"]].rename(
-    columns={"name": "country"}
-)
-
-country_noc_medals_ids = country_noc_ids.merge(data_2, how="left", on="NOC")
-country_noc_medals_ids = country_noc_medals_ids[
-    ["id", "country", "NOC", "medals", "Year", "Sport", "Sex"]
-]
-
-country_dropdown_list = list(country_noc_medals_ids['country'].unique())
-
 logo = "olympics_data_viz.png"
 
 # Setup app layout
@@ -108,6 +58,7 @@ tab_style = {
     "padding": "2px",
     "fontWeight": "bold",
     "marginLeft": "auto",
+    "color": "black",
 }
 
 
@@ -121,99 +72,158 @@ tab_selected_style = {
     "height": "50px",
 }
 
-content = "An interactive dashboard demonstrating statistics regarding the Summer and Winter Olympic Games from 2002 to 2016. This app will provide a dashboard that summarizes a few of the key statistics that we have extracted from this data. Specifically, our dashboard aims to provide accessible visuals that demonstrate the differences in biological sex, geographic location, and physical characteristics of athletes and how these factors impact performance within the Olympic Games."
+collapse = html.Div(
+    [
+        dbc.Button(
+            "I Need Help",
+            id="collapse-button",
+            className="mb-3",
+            outline=False,
+            style={
+                "margin-top": "10px",
+                "width": "150px",
+                "background-color": "white",
+                "color": "steelblue",
+            },
+        ),
+    ]
+)
+
+
+@app.callback(
+    Output("collapse", "is_open"),
+    [Input("collapse-button", "n_clicks")],
+    [State("collapse", "is_open")],
+)
+def toggle_collapse(n, is_open):
+    if n:
+        return not is_open
+    return is_open
+
+
+content = "An interactive dashboard demonstrating statistics regarding the Summer and Winter Olympic Games from 2000 to 2016. This app provides a dashboard that summarizes a few of the key statistics that we have extracted from this data. Specifically, our dashboard aims to provide accessible visuals that demonstrate the differences in biological sex, geographic location, and physical characteristics of athletes and how these factors impact performance within the Olympic Games."
 app.layout = dbc.Container(
     [
         dbc.Row(
             [
                 dbc.Col(
                     html.Div(
-                        style=tab_selected_style,
                         children=[
                             html.H3(
-                                "Analyzing the Olympics Over The Years",
+                                "Analyzing the Olympics From 2000-2016",
                                 style={"color": "white"},
                             )
                         ],
                     ),
                     style={"textalign": "centre"},
                 ),
-                html.Br(),
+                dbc.Col(
+                    [
+                        dbc.Collapse(
+                            html.P(
+                                """
+                        Thanks for stopping by! Explore the performances of different teams over the years
+                        by using the dropdown menus provided for you. You can select different years, sports,
+                        or you can filter by sex as well. You can obtain more information about each country by hovering over your country of 
+                        interest. If you want to remove filters, just press the X button for the
+                        corresponding filter. Feel free to navigate into the 'Data' tab as well to explore additional statistics
+                        about the teams at the Olympics. Happy filtering!""",
+                                style={
+                                    "color": "white",
+                                    "width": "100%",
+                                },
+                            ),
+                            id="collapse",
+                        )
+                    ]
+                ),
+                dbc.Col([collapse], align="center", style={"padding-left": "500px"}),
             ],
-            style={"backgroundColor": "#1C4E80"},
+            style={"backgroundColor": "#4EB593"},
         ),
         dbc.Tabs(
             [
                 dbc.Tab(
                     [
                         html.Br(),
-                        dbc.Row(
+                        html.Div(
                             [
-                                dbc.Col(
+                                dbc.Row(
                                     [
-                                        html.P(
-                                            "Year",
+                                        html.H2(
+                                            "Filters",
                                             style={
+                                                "flex-grow": "1",
+                                                "margin": "0px",
+                                                "line-height": "1",
                                                 "textAlign": "center",
-                                                "color": "#000000",
+                                                "color": "white",
                                             },
+                                        )
+                                    ]
+                                ),
+                                html.Br(),
+                                dbc.Row(
+                                    [
+                                        dbc.Col(
+                                            [
+                                                html.P(
+                                                    "Year",
+                                                    style={
+                                                        "textAlign": "center",
+                                                        "color": "#000000",
+                                                    },
+                                                ),
+                                                dcc.Dropdown(
+                                                    id="year_dropdown",
+                                                    options=[
+                                                        {"label": i, "value": i}
+                                                        for i in dropdown_list
+                                                    ],
+                                                    value=2016,
+                                                ),
+                                            ]
                                         ),
-                                        dcc.Dropdown(
-                                            id="year_dropdown",
-                                            options=[
-                                                {"label": i, "value": i}
-                                                for i in dropdown_list
-                                            ],
-                                            value=2016,
+                                        dbc.Col(
+                                            [
+                                                html.P(
+                                                    "Sex",
+                                                    style={
+                                                        "textAlign": "center",
+                                                        "color": "#000000",
+                                                    },
+                                                ),
+                                                dcc.Dropdown(
+                                                    id="sex_dropdown",
+                                                    options=data.Sex.unique().tolist(),
+                                                ),
+                                            ]
+                                        ),
+                                        dbc.Col(
+                                            [
+                                                html.P(
+                                                    "Sport",
+                                                    style={
+                                                        "textAlign": "center",
+                                                        "color": "#000000",
+                                                    },
+                                                ),
+                                                dcc.Dropdown(
+                                                    id="sport_dropdown",
+                                                    options=data.Sport.unique().tolist(),
+                                                ),
+                                            ]
                                         ),
                                     ]
                                 ),
-                                dbc.Col(
-                                    [
-                                        html.P(
-                                            "Gender",
-                                            style={
-                                                "textAlign": "center",
-                                                "color": "#000000",
-                                            },
-                                        ),
-                                        dcc.Dropdown(
-                                            id="sex_dropdown",
-                                            options=data.Sex.unique().tolist(),
-                                        ),
-                                    ]
-                                ),
-                                dbc.Col(
-                                    [
-                                        html.P(
-                                            "Sport",
-                                            style={
-                                                "textAlign": "center",
-                                                "color": "#000000",
-                                            },
-                                        ),
-                                        dcc.Dropdown(
-                                            id="sport_dropdown",
-                                            options=data.Sport.unique().tolist(),
-                                        ),
-                                    ]
-                                ),
-                                dbc.Col(
-                                    [
-                                        html.P(
-                                            "Country",
-                                            style={
-                                                "textAlign": "center",
-                                                "color": "#000000",
-                                            },
-                                        ),
-                                        dcc.Dropdown(
-                                            id="country_dropdown",
-                                            options=country_dropdown_list
-                                        ),
-                                    ]
-                                )
-                            ]
+                            ],
+                            style={
+                                "width": "100%",
+                                "margin-top": "0px",
+                                "padding": "25px",
+                                "background-color": "#4EB593",
+                                "border-radius": "10px",
+                            },
                         ),
                         html.Br(),
                         dbc.Row(
@@ -224,7 +234,10 @@ app.layout = dbc.Container(
                                             [
                                                 dbc.CardHeader(
                                                     "Number of Medals Received By Each Country",
-                                                    style={"color": "#000000"},
+                                                    style={
+                                                        "color": "#000000",
+                                                        "textAlign": "center",
+                                                    },
                                                 ),
                                                 dbc.CardBody(
                                                     html.Iframe(
@@ -252,7 +265,10 @@ app.layout = dbc.Container(
                                             [
                                                 dbc.CardHeader(
                                                     "Number and Type of Medals Received By Each Sex",
-                                                    style={"color": "#000000"},
+                                                    style={
+                                                        "color": "#000000",
+                                                        "textAlign": "center",
+                                                    },
                                                 ),
                                                 dbc.CardBody(
                                                     html.Iframe(
@@ -273,7 +289,10 @@ app.layout = dbc.Container(
                                             [
                                                 dbc.CardHeader(
                                                     "Number and Type of Medals Distributed By Age",
-                                                    style={"color": "#000000"},
+                                                    style={
+                                                        "color": "#000000",
+                                                        "textAlign": "center",
+                                                    },
                                                 ),
                                                 dbc.CardBody(
                                                     html.Iframe(
@@ -310,10 +329,9 @@ app.layout = dbc.Container(
                 ),
                 dbc.Tab(
                     [
+                        html.Br(),
                         dbc.Row(
                             [
-                                html.Hr(),
-                                html.Br(),
                                 dbc.Col(
                                     [
                                         html.Div(
@@ -325,12 +343,16 @@ app.layout = dbc.Container(
                                                         "margin": "0px",
                                                         "line-height": "1",
                                                         "textAlign": "center",
+                                                        "color": "white",
                                                     },
                                                 ),
                                                 html.Hr(),
                                                 html.P(
                                                     "Select a Year",
-                                                    style={"textAlign": "center"},
+                                                    style={
+                                                        "textAlign": "center",
+                                                        "color": "#000000",
+                                                    },
                                                 ),
                                                 dcc.Dropdown(
                                                     id="year_df_dropdown",
@@ -344,7 +366,10 @@ app.layout = dbc.Container(
                                                 html.Br(),
                                                 html.P(
                                                     "Select an Olympic Statistic",
-                                                    style={"textAlign": "center"},
+                                                    style={
+                                                        "textAlign": "center",
+                                                        "color": "#000000",
+                                                    },
                                                 ),
                                                 dcc.Dropdown(
                                                     id="df_dropdown",
@@ -360,7 +385,7 @@ app.layout = dbc.Container(
                                                 "width": "70%",
                                                 "margin-top": "0px",
                                                 "padding": "25px",
-                                                "background-color": "#A0EBEB",
+                                                "background-color": "#4EB593",
                                                 "border-radius": "10px",
                                                 "justify-content": "space-around",
                                                 "flex-direction": "row",
@@ -405,7 +430,7 @@ app.layout = dbc.Container(
                                     ]
                                 ),
                             ]
-                        )
+                        ),
                     ],
                     label="Data",
                     style=tab_style,
@@ -443,7 +468,7 @@ def filter_table(cols, year):
     Input("sex_dropdown", "value"),
 )
 # World map
-def create_world_plot(year=None, sport=None, sex=None, country=None):
+def create_world_plot(year=None, sport=None, sex=None):
     """
     Filters for selected features and creates the 'country' vs 'medals won' plot.
     Parameters
@@ -456,16 +481,13 @@ def create_world_plot(year=None, sport=None, sex=None, country=None):
         the sport to filter the data by
     sex: str
         the biological sex to filter the data by
-    country: str
-        the country to filter the data by
-
     Returns
     -------
     alt.Chart
         the plot showing the medals received distributed by country, filtered for the selected features
     Examples
     --------
-    >>> create_world_plot(year=2014, sport="Ice Hockey", sex="Male", country="Canada")
+    >>> create_world_plot(year=2014, sport="Ice Hockey", sex="Male")
     >>> create_world_plot(year=2014)
     """
     data = pd.read_csv("data/processed/athlete_events_2000.csv")
@@ -475,8 +497,6 @@ def create_world_plot(year=None, sport=None, sex=None, country=None):
         raise TypeError("sport should be of type 'str'")
     if not isinstance(sex, str) and sex is not None:
         raise TypeError("sex should be of type 'str'")
-    if not isinstance(country, str) and country is not None:
-        raise TypeError("country should be of type 'str'")
 
     if year is not None:
         data = data[data["Year"] == year]
@@ -484,19 +504,67 @@ def create_world_plot(year=None, sport=None, sex=None, country=None):
         data = data[data["Sport"] == sport]
     if sex is not None:
         data = data[data["Sex"] == sex]
-    if country is not None:
-        data = data[data["country"] == country]
+
+    data_2 = (
+        data[["NOC", "Medal", "Year", "Sport", "Sex"]]
+        .groupby(["NOC", "Year", "Sport", "Sex"])
+        .agg("count")
+        .reset_index()
+        .rename(columns={"Medal": "medals"})
+    )
+
+    country_ids = pd.read_csv("data/processed/country-ids.csv")
+
+    noc = pd.read_csv("data/processed/noc_regions.csv")
+    noc = noc[["NOC", "region"]]
+
+    noc["region"][noc["region"] == "USA"] = "United States"
+    noc["region"][noc["region"] == "Boliva"] = "Bolivia, Plurinational State of"
+    noc["region"][noc["region"] == "Brunei"] = "Brunei Darussalam"
+    noc["region"][noc["region"] == "Republic of Congo"] = "Congo"
+    noc["region"][
+        noc["region"] == "Democratic Republic of the Congo"
+    ] = "Congo, the Democratic Republic of the"
+    noc["region"][noc["region"] == "Ivory Coast"] = """Cote d'Ivoire"""
+    noc["region"][noc["region"] == "Iran"] = "Iran, Islamic Republic of"
+    noc["region"][
+        noc["region"] == "North Korea"
+    ] = """Korea, Democratic People's Republic of"""
+    noc["region"][noc["region"] == "South Korea"] = "Korea, Republic of"
+    noc["region"][noc["region"] == "Moldova"] = "Moldova, Republic of"
+    noc["region"][noc["region"] == "Palestine"] = "Palestinian Territory, Occupied"
+    noc["region"][noc["region"] == "Russia"] = "Russian Federation"
+    noc["region"][noc["region"] == "Syria"] = "Syrian Arab Republic"
+    noc["region"][noc["region"] == "Taiwan"] = "Taiwan, Province of China"
+    noc["region"][noc["region"] == "Tanzania"] = "Tanzania, United Republic of"
+    noc["region"][noc["region"] == "Trinidad"] = "Trinidad and Tobago"
+    noc["region"][noc["region"] == "UK"] = "United Kingdom"
+    noc["region"][noc["region"] == "Venezuela"] = "Venezuela, Bolivarian Republic of"
+    noc["region"][noc["region"] == "Vietnam"] = "Viet Nam"
+
+    country_noc_ids = noc.merge(
+        country_ids, how="inner", left_on="region", right_on="name"
+    )
+    country_noc_ids = country_noc_ids[country_noc_ids["NOC"] != "NFL"]
+    country_noc_ids = country_noc_ids[["id", "name", "NOC"]].rename(
+        columns={"name": "country"}
+    )
+
+    country_noc_medals_ids = country_noc_ids.merge(data_2, how="left", on="NOC")
+    country_noc_medals_ids = country_noc_medals_ids[
+        ["id", "country", "NOC", "medals", "Year", "Sport", "Sex"]
+    ]
 
     map_click = alt.selection_multi()
     world_map = alt.topo_feature(v_data.world_110m.url, "countries")
 
-    if (year is None) & (sex is None) & (sport is None) & (country is None):
+    if (year is None) & (sex is None) & (sport is None):
         country_noc_medals_ids = (
             country_noc_medals_ids.groupby(["id", "country"])["medals"]
             .agg("sum")
             .reset_index()
         )
-    elif (year is None) & (sex is None) & (sport is not None) & (country is None):
+    elif (year is None) & (sex is None) & (sport is not None):
         country_noc_medals_ids = (
             country_noc_medals_ids.groupby(["id", "Sport" "country"])["medals"]
             .agg("sum")
@@ -505,37 +573,7 @@ def create_world_plot(year=None, sport=None, sex=None, country=None):
         country_noc_medals_ids = country_noc_medals_ids[
             (country_noc_medals_ids.Sport == sport)
         ]
-    elif (year is not None) & (sex is None) & (sport is None) & (country is None):
-        country_noc_medals_ids = (
-            country_noc_medals_ids.groupby(["id", "Year", "country"])["medals"]
-            .agg("sum")
-            .reset_index()
-        )
-        country_noc_medals_ids = country_noc_medals_ids[
-            (country_noc_medals_ids.Year == year)
-        ]
-    elif (year is None) & (sex is not None) & (sport is None) & (country is None):
-        country_noc_medals_ids = (
-            country_noc_medals_ids.groupby(["id", "Sex", "country"])["medals"]
-            .agg("sum")
-            .reset_index()
-        )
-        country_noc_medals_ids = country_noc_medals_ids[
-            (country_noc_medals_ids.Sex == sex)
-        ]
-    elif (year is None) & (sex is None) & (sport is None) & (country is not None):
-        country_noc_medals_ids = (
-            country_noc_medals_ids.groupby(["id", "country"])["medals"]
-            .agg("sum")
-            .reset_index()
-        )
-        country_noc_medals_ids = country_noc_medals_ids[
-            (country_noc_medals_ids.country == country)
-        ]
-
-
-
-    elif (year is None) & (sex is not None) & (sport is not None) & (country is None):
+    elif (year is None) & (sex is not None) & (sport is not None):
         country_noc_medals_ids = (
             country_noc_medals_ids.groupby(["id", "Sport", "Sex", "country"])["medals"]
             .agg("sum")
@@ -545,7 +583,7 @@ def create_world_plot(year=None, sport=None, sex=None, country=None):
             (country_noc_medals_ids.Sport == sport)
             & (country_noc_medals_ids.Sex == sex)
         ]
-    elif (year is not None) & (sex is None) & (sport is not None) & (country is None):
+    elif (year is not None) & (sex is None) & (sport is not None):
         country_noc_medals_ids = (
             country_noc_medals_ids.groupby(["id", "Sport", "Year", "country"])["medals"]
             .agg("sum")
@@ -555,7 +593,7 @@ def create_world_plot(year=None, sport=None, sex=None, country=None):
             (country_noc_medals_ids.Sport == sport)
             & (country_noc_medals_ids.Year == year)
         ]
-    elif (year is not None) & (sex is not None) & (sport is None) & (country is None):
+    elif (year is not None) & (sex is not None) & (sport is None):
         country_noc_medals_ids = (
             country_noc_medals_ids.groupby(["id", "Sex", "Year", "country"])["medals"]
             .agg("sum")
@@ -564,72 +602,24 @@ def create_world_plot(year=None, sport=None, sex=None, country=None):
         country_noc_medals_ids = country_noc_medals_ids[
             (country_noc_medals_ids.Sex == sex) & (country_noc_medals_ids.Year == year)
         ]
-    elif (year is not None) & (sex is None) & (sport is None) & (country is not None):
+    elif (year is not None) & (sex is None) & (sport is None):
         country_noc_medals_ids = (
             country_noc_medals_ids.groupby(["id", "Year", "country"])["medals"]
             .agg("sum")
             .reset_index()
         )
         country_noc_medals_ids = country_noc_medals_ids[
-            (country_noc_medals_ids.country == country) & (country_noc_medals_ids.Year == year)
+            (country_noc_medals_ids.Year == year)
         ]
-    elif (year is None) & (sex is not None) & (sport is None) & (country is not None):
+    elif (year is None) & (sex is not None) & (sport is None):
         country_noc_medals_ids = (
             country_noc_medals_ids.groupby(["id", "Sex", "country"])["medals"]
             .agg("sum")
             .reset_index()
         )
         country_noc_medals_ids = country_noc_medals_ids[
-            (country_noc_medals_ids.Sex == sex) & (country_noc_medals_ids.country == country)
+            (country_noc_medals_ids.Sex == sex)
         ]
-    elif (year is None) & (sex is None) & (sport is not None) & (country is not None):
-        country_noc_medals_ids = (
-            country_noc_medals_ids.groupby(["id", "Sport", "country"])["medals"]
-            .agg("sum")
-            .reset_index()
-        )
-        country_noc_medals_ids = country_noc_medals_ids[
-            (country_noc_medals_ids.Sport == sport) & (country_noc_medals_ids.country == country)
-        ]
-
-
-    elif (year is None) & (sex is not None) & (sport is not None) & (country is not None):
-        country_noc_medals_ids = (
-            country_noc_medals_ids.groupby(["id", "Sex", "Sport", "country"])["medals"]
-            .agg("sum")
-            .reset_index()
-        )
-        country_noc_medals_ids = country_noc_medals_ids[
-            (country_noc_medals_ids.Sport == sport) & (country_noc_medals_ids.country == country) & (country_noc_medals_ids.Sex == sex)
-        ]
-    elif (year is not None) & (sex is None) & (sport is not None) & (country is not None):
-        country_noc_medals_ids = (
-            country_noc_medals_ids.groupby(["id", "Year", "Sport", "country"])["medals"]
-            .agg("sum")
-            .reset_index()
-        )
-        country_noc_medals_ids = country_noc_medals_ids[
-            (country_noc_medals_ids.Sport == sport) & (country_noc_medals_ids.country == country) & (country_noc_medals_ids.Year == year)
-        ]
-    elif (year is not None) & (sex is not None) & (sport is None) & (country is not None):
-        country_noc_medals_ids = (
-            country_noc_medals_ids.groupby(["id", "Year", "Sex", "country"])["medals"]
-            .agg("sum")
-            .reset_index()
-        )
-        country_noc_medals_ids = country_noc_medals_ids[
-            (country_noc_medals_ids.Sex == sex) & (country_noc_medals_ids.country == country) & (country_noc_medals_ids.Year == year)
-        ]
-    elif (year is not None) & (sex is not None) & (sport is not None) & (country is None):
-        country_noc_medals_ids = (
-            country_noc_medals_ids.groupby(["id", "Sport", "Sex", "Year", "country"])["medals"]
-            .agg("sum")
-            .reset_index()
-        )
-        country_noc_medals_ids = country_noc_medals_ids[
-            (country_noc_medals_ids.Sport == sport) & (country_noc_medals_ids.Sex == sex) & (country_noc_medals_ids.Year == year)
-        ]
-
     else:
         country_noc_medals_ids = (
             country_noc_medals_ids.groupby(["id", "Sex", "Sport", "Year", "country"])[
@@ -667,7 +657,6 @@ def create_world_plot(year=None, sport=None, sex=None, country=None):
     return map_display.configure_view(strokeWidth=0).to_html()
 
 
-
 @app.callback(
     Output("gender_medals", "srcDoc"),
     Input("year_dropdown", "value"),
@@ -686,7 +675,6 @@ def create_gender_medal_plot(year=None, sport=None, sex=None):
         the sport to filter the data by
     sex: str
         the biological sex to filter the data by
-
     Returns
     -------
     alt.Chart
@@ -763,7 +751,6 @@ def create_age_plot(year=None, sport=None, sex=None):
         the sport to filter the data by
     sex: str
         the biological sex to filter the data by
-
     Returns
     -------
     alt.Chart
