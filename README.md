@@ -19,7 +19,7 @@ We hope you learn something new about the Olympic Games, or that we can inspire 
 ## App Demonstration
 
 <p align="center">
-  <img width="600" height="400" src="https://media.giphy.com/media/Fsx8KoF0Ko0Q0C0JZm/giphy.gif">
+  <img width="600" height="400" src="https://media.giphy.com/media/Vj0fzDtpG1dUXSPEhE/giphy.gif">
 </p>
 
 ## Motivation
