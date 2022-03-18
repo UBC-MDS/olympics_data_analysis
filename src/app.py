@@ -288,7 +288,7 @@ app.layout = dbc.Container(
                                         dbc.Card(
                                             [
                                                 dbc.CardHeader(
-                                                    "Number and Type of Medals Distributed By Age",
+                                                    "Density of Each Medal Type Distributed By Age",
                                                     style={
                                                         "color": "#000000",
                                                         "textAlign": "center",
@@ -784,7 +784,7 @@ def create_age_plot(year=None, sport=None, sex=None):
                 x=alt.X("Age", title="Age (Years)", axis=alt.Axis(grid=False)),
                 y=alt.Y(
                     "density:Q",
-                    title="Number of Medals Received",
+                    title="Density",
                     axis=alt.Axis(grid=False),
                 ),
                 color=alt.Color("Medal:O", scale=alt.Scale(scheme="darkblue")),
