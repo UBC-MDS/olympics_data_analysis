@@ -58,6 +58,7 @@ tab_style = {
     "padding": "2px",
     "fontWeight": "bold",
     "marginLeft": "auto",
+    "color": "black",
 }
 
 
@@ -100,7 +101,7 @@ def toggle_collapse(n, is_open):
     return is_open
 
 
-content = "An interactive dashboard demonstrating statistics regarding the Summer and Winter Olympic Games from 2002 to 2016. This app will provide a dashboard that summarizes a few of the key statistics that we have extracted from this data. Specifically, our dashboard aims to provide accessible visuals that demonstrate the differences in biological sex, geographic location, and physical characteristics of athletes and how these factors impact performance within the Olympic Games."
+content = "An interactive dashboard demonstrating statistics regarding the Summer and Winter Olympic Games from 2000 to 2016. This app provides a dashboard that summarizes a few of the key statistics that we have extracted from this data. Specifically, our dashboard aims to provide accessible visuals that demonstrate the differences in biological sex, geographic location, and physical characteristics of athletes and how these factors impact performance within the Olympic Games."
 app.layout = dbc.Container(
     [
         dbc.Row(
@@ -138,7 +139,7 @@ app.layout = dbc.Container(
                 ),
                 dbc.Col([collapse], align="center", style={"padding-left": "500px"}),
             ],
-            style={"backgroundColor": "steelblue"},
+            style={"backgroundColor": "#4EB593"},
         ),
         dbc.Tabs(
             [
@@ -220,7 +221,7 @@ app.layout = dbc.Container(
                                 "width": "100%",
                                 "margin-top": "0px",
                                 "padding": "25px",
-                                "background-color": "steelblue",
+                                "background-color": "#4EB593",
                                 "border-radius": "10px",
                             },
                         ),
@@ -233,7 +234,10 @@ app.layout = dbc.Container(
                                             [
                                                 dbc.CardHeader(
                                                     "Number of Medals Received By Each Country",
-                                                    style={"color": "#000000"},
+                                                    style={
+                                                        "color": "#000000",
+                                                        "textAlign": "center",
+                                                    },
                                                 ),
                                                 dbc.CardBody(
                                                     html.Iframe(
@@ -261,7 +265,10 @@ app.layout = dbc.Container(
                                             [
                                                 dbc.CardHeader(
                                                     "Number and Type of Medals Received By Each Sex",
-                                                    style={"color": "#000000"},
+                                                    style={
+                                                        "color": "#000000",
+                                                        "textAlign": "center",
+                                                    },
                                                 ),
                                                 dbc.CardBody(
                                                     html.Iframe(
@@ -282,7 +289,10 @@ app.layout = dbc.Container(
                                             [
                                                 dbc.CardHeader(
                                                     "Number and Type of Medals Distributed By Age",
-                                                    style={"color": "#000000"},
+                                                    style={
+                                                        "color": "#000000",
+                                                        "textAlign": "center",
+                                                    },
                                                 ),
                                                 dbc.CardBody(
                                                     html.Iframe(
@@ -319,10 +329,9 @@ app.layout = dbc.Container(
                 ),
                 dbc.Tab(
                     [
+                        html.Br(),
                         dbc.Row(
                             [
-                                html.Hr(),
-                                html.Br(),
                                 dbc.Col(
                                     [
                                         html.Div(
@@ -334,12 +343,16 @@ app.layout = dbc.Container(
                                                         "margin": "0px",
                                                         "line-height": "1",
                                                         "textAlign": "center",
+                                                        "color": "white",
                                                     },
                                                 ),
                                                 html.Hr(),
                                                 html.P(
                                                     "Select a Year",
-                                                    style={"textAlign": "center"},
+                                                    style={
+                                                        "textAlign": "center",
+                                                        "color": "#000000",
+                                                    },
                                                 ),
                                                 dcc.Dropdown(
                                                     id="year_df_dropdown",
@@ -353,7 +366,10 @@ app.layout = dbc.Container(
                                                 html.Br(),
                                                 html.P(
                                                     "Select an Olympic Statistic",
-                                                    style={"textAlign": "center"},
+                                                    style={
+                                                        "textAlign": "center",
+                                                        "color": "#000000",
+                                                    },
                                                 ),
                                                 dcc.Dropdown(
                                                     id="df_dropdown",
@@ -369,7 +385,7 @@ app.layout = dbc.Container(
                                                 "width": "70%",
                                                 "margin-top": "0px",
                                                 "padding": "25px",
-                                                "background-color": "#A0EBEB",
+                                                "background-color": "#4EB593",
                                                 "border-radius": "10px",
                                                 "justify-content": "space-around",
                                                 "flex-direction": "row",
@@ -414,7 +430,7 @@ app.layout = dbc.Container(
                                     ]
                                 ),
                             ]
-                        )
+                        ),
                     ],
                     label="Data",
                     style=tab_style,
