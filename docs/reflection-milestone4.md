@@ -2,19 +2,20 @@
 
 ### Has it been easy to use your app?
 
-The dashboard is fairly easy to use where the user will get all the help they need with the `About` section and `I need help` drop down button.
+We aimed to make this app as easy to use for our target audience (general public) as possible. Our attempts to do this included implementing 'guidance' features into the app, such as an 'I need help' collapsable button, and a tooltip on the word 'Density', which explains what this term means.
 
 ### What we have implemented in your dashboard so far:
 
 #### For both R and Python Dashboards:
 
-The dashboard is for both R and Python Dashboard are similar.
+The dashboard is for both R and Python Dashboard are similar, although the Python app is more developed and is visually more appealing.
 
 We have implemented three plots, which are:
 
 1.  `Number of medals won by each country` world map
 2.  `Number of Gold, Silver and Bronze medals across Gender` bar plot
 3.  `Number of medals across Age` histogram
+4.  Data table showing aggregated features by team (Only DashPy app)
 
 #### Changes made in the Python Dashboard:
 
@@ -29,15 +30,15 @@ We have taken the feedback of our peers and TA and implemented the following cha
 
 #### Differences between DashR and DashPy app:
 
-The the DashR app doesn't have the drop down mentioned in the DashPy app along with the data table tab.
+The the DashR app does not contain many of the aesthetic improvements that we made for the DashPy app. For example, we did not have time to include the 'I need help' collapsable button or the `Density` tooltip, which act as guides for the users. This means that our DashPy app is more visually appealing and likely more usable for our target audience compared to the DashR app. Additionally, we did not have time to include the data table tab, which was another important addition to our DashPy app.
 
 #### Are there reoccurring themes in your feedback on what is good and what can be improved?
 
-There is no particular theme in the feedback. We planned to include the `Country` filter to go along with the other filters, but, owing to the time constraint, we could not implement it because that would require wrangling data at different levels for each graph.
+There is no particular theme in the feedback. We planned to include the `Country` filter to go along with the other filters, but we could not implement this feature because it required complex wrangling of the data at different levels for each graph and it became too complicated to complete within the given time contraint. 
 
 #### Is there any feedback (or other insight) that you have found particularly valuable during your dashboard development?
 
-The suggestion for the Data table was helpful and we have implemented the same
+The suggestion for the Data table was helpful and we found the TA's suggestion about implementing a `Country` drop down menu very valuable, although we regrettably did not have enough time to complete this feature. 
 
 #### What are potential improvements and additions
 
